@@ -5,6 +5,30 @@ interface UploadResult {
   url: string;
 }
 
+/**
+ * Sanitize a filename to only contain ASCII-safe characters.
+ * lmfiles.com returns 500 Internal Server Error for files with
+ * non-ASCII names (Arabic, Chinese, emoji, etc.), so we must
+ * rename the file before uploading while keeping the extension.
+ */
+function sanitizeFileName(originalName: string): string {
+  // Extract the extension (keep it as-is, it's usually ASCII)
+  const lastDot = originalName.lastIndexOf('.');
+  const baseName = lastDot > 0 ? originalName.substring(0, lastDot) : originalName;
+  const extension = lastDot > 0 ? originalName.substring(lastDot) : '';
+
+  // Replace any non-ASCII character with underscore, collapse multiple underscores
+  const safeBase = baseName
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '');
+
+  // If the base name becomes empty after sanitization, generate a unique one
+  const finalBase = safeBase || `file_${Date.now()}`;
+
+  return finalBase + extension.toLowerCase();
+}
+
 export async function uploadFile(file: File): Promise<UploadResult> {
   const apiKey = process.env.LMFILES_API_KEY;
 
@@ -17,8 +41,12 @@ export async function uploadFile(file: File): Promise<UploadResult> {
     };
   }
 
+  // Sanitize filename to prevent 500 errors from lmfiles on non-ASCII names
+  const safeName = sanitizeFileName(file.name);
+  const safeFile = new File([file], safeName, { type: file.type });
+
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append('file', safeFile);
 
   const response = await fetch(`${LMFILES_API_URL}/upload`, {
     method: 'POST',
