@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model UploadedFile {
+  id            String    @id @default(cuid())
+  fileName      String
+  originalName  String
+  fileUrl       String
+  fileSize      Int
+  mimeType      String
+  uploaderIp    String
+  lmfilesId     String?
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime?
+  downloadCount Int       @default(0)
+}
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  excerpt   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
