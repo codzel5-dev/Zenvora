@@ -13,8 +13,16 @@ import {
   ArrowRight,
   Share2,
   FileSearch,
+  RefreshCw,
+  Image as ImageIcon,
+  FileText,
+  Video,
+  Music,
+  Archive,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { FileUploader } from '@/components/upload/file-uploader';
 import { CtaSection } from '@/components/cta-section';
 import { AdBanner } from '@/components/ads/ad-banner';
@@ -293,6 +301,80 @@ export default function HomePage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* File Converter Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 mb-4">
+              <RefreshCw className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm font-medium text-amber-700 dark:text-amber-300">200+ Formats</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              Free <span className="text-amber-600 dark:text-amber-400">File Converter</span>
+            </h2>
+            <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+              Convert images, documents, videos, audio, and archives between formats instantly.
+              No software to install — everything happens in the cloud, fast and secure.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Left: Format categories */}
+            <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {[
+                { icon: ImageIcon, label: 'Images', formats: ['PNG', 'JPG', 'WebP', 'GIF', 'SVG', 'BMP', 'ICO', 'TIFF'], color: 'emerald' },
+                { icon: FileText, label: 'Documents', formats: ['PDF', 'DOCX', 'XLSX', 'PPTX', 'TXT', 'HTML', 'CSV', 'RTF'], color: 'blue' },
+                { icon: Video, label: 'Video', formats: ['MP4', 'WebM', 'AVI', 'MOV', 'MKV', 'GIF'], color: 'purple' },
+                { icon: Music, label: 'Audio', formats: ['MP3', 'WAV', 'OGG', 'FLAC', 'AAC', 'WMA'], color: 'pink' },
+                { icon: Archive, label: 'Archives', formats: ['ZIP', 'TAR', 'GZ', '7Z', 'RAR'], color: 'yellow' },
+                { icon: Sparkles, label: 'AI-Powered', formats: ['Smart Analysis', 'Auto Tags', 'Summaries'], color: 'amber' },
+              ].map((cat) => (
+                <Card key={cat.label} className="border-border/50 hover:border-amber-300 dark:hover:border-amber-700 transition-colors">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <cat.icon className={`h-5 w-5 text-${cat.color}-600 dark:text-${cat.color}-400`} />
+                      <span className="font-semibold text-sm">{cat.label}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {cat.formats.map(f => (
+                        <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Right: CTA card */}
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border-amber-200 dark:border-amber-800">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center mb-4">
+                  <FileSearch className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Convert Files Now</h3>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                  Upload any file and convert it to a different format in seconds.
+                  Free, no sign-up required.
+                </p>
+                <Link href="/convert" className="w-full">
+                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2 h-11 text-base">
+                    <RefreshCw className="h-4 w-4" />
+                    Start Converting
+                  </Button>
+                </Link>
+                <div className="flex items-center gap-3 mt-4 text-xs text-muted-foreground">
+                  <span>Free</span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span>No Sign-up</span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span>200+ Formats</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

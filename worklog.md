@@ -43,3 +43,20 @@ Stage Summary:
 - To add more keys: just copy an entry in the config file and replace the values
 - API payload format fixed (CloudConvert v2 expects flat task properties, not nested in "data")
 - Build passes successfully
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Add Key 2 with OAuth credentials + Add Convert section to homepage
+
+Work Log:
+- Added Key 2 to `src/config/cloudconvert-keys.ts` with full OAuth credentials (clientId: 7482, clientSecret: WdJUXxCDg9mkwwFl2CBl684TrC7BrpoMh7CXye3A)
+- Added "Free File Converter" section to homepage (`src/app/page.tsx`) with format categories grid and CTA card linking to /convert
+- Added imports: RefreshCw, ImageIcon, FileText, Video, Music, Archive, Badge, Button
+- Verified TypeScript compilation and Next.js build both pass
+
+Stage Summary:
+- Total keys: 2 (Key 1 with clientId 7481 + Key 2 with clientId 7482)
+- Daily conversion capacity: 20 conversions/day (10 per key)
+- Homepage now has a dedicated Convert section with format categories and a CTA button
+- Build passes successfully
