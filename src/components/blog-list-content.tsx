@@ -10,6 +10,7 @@ interface BlogPost {
   title: string;
   slug: string;
   excerpt: string;
+  imageUrl: string;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -47,20 +48,20 @@ export function BlogListContent() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       {/* Hero */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
           The FileVault{' '}
           <span className="text-emerald-600 dark:text-emerald-400">Blog</span>
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Tips, guides, and updates about file sharing, online security, and getting the most out of FileVault.
+          Expert guides on cloud storage, file sharing, and data security. Stay informed with the latest trends and best practices.
         </p>
       </div>
 
       {/* Search */}
-      <form onSubmit={handleSearch} className="max-w-md mx-auto mb-10">
+      <form onSubmit={handleSearch} className="max-w-md mx-auto mb-12">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -77,11 +78,14 @@ export function BlogListContent() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-xl border bg-card p-6">
-              <div className="h-3 bg-muted rounded w-1/4 mb-3" />
-              <div className="h-5 bg-muted rounded w-3/4 mb-2" />
-              <div className="h-3 bg-muted rounded w-full mb-1" />
-              <div className="h-3 bg-muted rounded w-2/3" />
+            <div key={i} className="animate-pulse rounded-xl border bg-card overflow-hidden">
+              <div className="aspect-[16/9] bg-muted" />
+              <div className="p-6">
+                <div className="h-3 bg-muted rounded w-1/4 mb-3" />
+                <div className="h-5 bg-muted rounded w-3/4 mb-2" />
+                <div className="h-3 bg-muted rounded w-full mb-1" />
+                <div className="h-3 bg-muted rounded w-2/3" />
+              </div>
             </div>
           ))}
         </div>
@@ -102,6 +106,7 @@ export function BlogListContent() {
               slug={post.slug}
               excerpt={post.excerpt}
               createdAt={post.createdAt}
+              imageUrl={post.imageUrl}
             />
           ))}
         </div>

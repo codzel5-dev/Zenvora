@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, Share2, Calendar, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ interface BlogPostData {
   slug: string;
   content: string;
   excerpt: string;
+  imageUrl: string;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -25,6 +27,7 @@ interface RelatedPost {
   slug: string;
   excerpt: string;
   createdAt: string;
+  imageUrl: string;
 }
 
 export function BlogPostContent() {
@@ -64,11 +67,11 @@ export function BlogPostContent() {
 
   const fetchRelated = async () => {
     try {
-      const response = await fetch('/api/blog?limit=3');
+      const response = await fetch('/api/blog?limit=4');
       if (response.ok) {
         const data = await response.json();
         const filtered = (data.posts || []).filter((p: RelatedPost) => p.slug !== slug);
-        setRelatedPosts(filtered.slice(0, 2));
+        setRelatedPosts(filtered.slice(0, 3));
       }
     } catch {
       // silently fail
@@ -95,6 +98,7 @@ export function BlogPostContent() {
           <div className="h-4 bg-muted rounded w-1/4" />
           <div className="h-8 bg-muted rounded w-3/4" />
           <div className="h-4 bg-muted rounded w-1/2" />
+          <div className="aspect-[16/9] bg-muted rounded-xl" />
           <Separator />
           <div className="space-y-3">
             <div className="h-4 bg-muted rounded" />
@@ -113,7 +117,7 @@ export function BlogPostContent() {
           {error || 'Post not found'}
         </h1>
         <Link href="/blog" className="text-emerald-600 dark:text-emerald-400 hover:underline">
-          ← Back to Blog
+          &larr; Back to Blog
         </Link>
       </div>
     );
@@ -135,6 +139,7 @@ export function BlogPostContent() {
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
           {post.title}
         </h1>
+        <p className="text-lg text-muted-foreground mb-4">{post.excerpt}</p>
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" />
@@ -166,6 +171,20 @@ export function BlogPostContent() {
           </Button>
         </div>
       </header>
+
+      {/* Featured Image */}
+      {post.imageUrl && (
+        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-muted">
+          <Image
+            src={post.imageUrl}
+            alt={post.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 768px"
+            priority
+          />
+        </div>
+      )}
 
       <Separator className="mb-8" />
 
@@ -200,7 +219,7 @@ export function BlogPostContent() {
       {relatedPosts.length > 0 && (
         <section className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {relatedPosts.map((relatedPost) => (
               <BlogCard
                 key={relatedPost.id}
@@ -208,6 +227,7 @@ export function BlogPostContent() {
                 slug={relatedPost.slug}
                 excerpt={relatedPost.excerpt}
                 createdAt={relatedPost.createdAt}
+                imageUrl={relatedPost.imageUrl}
               />
             ))}
           </div>

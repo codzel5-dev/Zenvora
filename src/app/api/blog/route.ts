@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
           title: true,
           slug: true,
           excerpt: true,
+          imageUrl: true,
           published: true,
           createdAt: true,
           updatedAt: true,
