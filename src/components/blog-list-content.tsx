@@ -27,7 +27,7 @@ export function BlogListContent() {
 
   const fetchPosts = async (searchQuery?: string) => {
     try {
-      const params = new URLSearchParams({ published: 'true' });
+      const params = new URLSearchParams({ published: 'true', limit: '50' });
       if (searchQuery) params.set('search', searchQuery);
       const response = await fetch(`/api/blog?${params.toString()}`);
       if (response.ok) {
