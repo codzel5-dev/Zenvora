@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Sparkles, Brain } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles, Brain, FileSearch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FilePreview } from '@/components/file/file-preview';
@@ -110,6 +110,15 @@ export function FilePreviewClient({ file }: FilePreviewClientProps) {
           <span>{file.mimeType}</span>
           <span>·</span>
           <span>{file.downloadCount} downloads</span>
+        </div>
+        {/* Convert this file button */}
+        <div className="mt-3">
+          <Link href={`/convert?fileUrl=${encodeURIComponent(file.fileUrl)}&mimeType=${encodeURIComponent(file.mimeType)}&fileName=${encodeURIComponent(file.originalName)}`}>
+            <Button variant="outline" className="gap-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30">
+              <FileSearch className="h-4 w-4" />
+              Convert this file
+            </Button>
+          </Link>
         </div>
       </div>
 

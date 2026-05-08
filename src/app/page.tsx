@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import {
   CloudUpload,
   Shield,
@@ -45,6 +46,7 @@ const workflowSteps = [
   {
     icon: FileSearch,
     label: 'Convert',
+    href: '/convert',
     color: 'text-amber-600 dark:text-amber-400',
     bg: 'bg-amber-100 dark:bg-amber-900/40',
   },
@@ -128,10 +130,17 @@ export default function HomePage() {
             <div className="mt-5 flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
               {workflowSteps.map((step, index) => (
                 <span key={step.label} className="flex items-center gap-1 sm:gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-background border border-border/60 shadow-sm">
-                    <step.icon className={`h-4 w-4 ${step.color}`} />
-                    <span>{step.label}</span>
-                  </span>
+                  {'href' in step && step.href ? (
+                    <Link href={step.href} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-background border border-amber-300 dark:border-amber-700 shadow-sm hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors cursor-pointer">
+                      <step.icon className={`h-4 w-4 ${step.color}`} />
+                      <span>{step.label}</span>
+                    </Link>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-background border border-border/60 shadow-sm">
+                      <step.icon className={`h-4 w-4 ${step.color}`} />
+                      <span>{step.label}</span>
+                    </span>
+                  )}
                   {index < workflowSteps.length - 1 && (
                     <ArrowRight className="h-4 w-4 text-emerald-500 animate-pulse hidden sm:block" />
                   )}

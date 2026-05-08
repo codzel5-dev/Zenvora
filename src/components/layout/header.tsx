@@ -18,21 +18,24 @@ import {
   Palette,
   Sparkles,
   Terminal,
+  FileSearch,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navLinks = [
   { href: '/', label: 'Home' },
+  { href: '/convert', label: 'Convert' },
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
 ];
 
 const exploreLinks = [
+  { href: '/convert', label: 'File Converter', icon: FileSearch, color: 'text-amber-500' },
   { href: '/templates', label: 'Templates', icon: LayoutTemplate, color: 'text-emerald-500' },
   { href: '/ebooks', label: 'E-Books', icon: BookOpen, color: 'text-red-500' },
   { href: '/design', label: 'Design Assets', icon: Palette, color: 'text-purple-500' },
-  { href: '/prompts', label: 'AI Prompts', icon: Sparkles, color: 'text-amber-500' },
+  { href: '/prompts', label: 'AI Prompts', icon: Sparkles, color: 'text-yellow-500' },
   { href: '/scripts', label: 'Scripts', icon: Terminal, color: 'text-sky-500' },
 ];
 
