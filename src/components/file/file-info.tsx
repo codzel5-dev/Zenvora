@@ -17,6 +17,7 @@ import {
   Brain,
   FileText,
   Lightbulb,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -182,27 +183,33 @@ export function FileInfo({
         </Button>
       </div>
 
-      {/* ====== AI ANALYSIS SECTION - PROMINENT ====== */}
-      <Card className={`border-2 ${hasAiData ? 'border-emerald-300 dark:border-emerald-700' : 'border-purple-300 dark:border-purple-700'}`}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <div className={`rounded-lg p-1.5 ${hasAiData ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-purple-100 dark:bg-purple-900/40'}`}>
-              <Brain className={`h-4 w-4 ${hasAiData ? 'text-emerald-600 dark:text-emerald-400' : 'text-purple-600 dark:text-purple-400'}`} />
-            </div>
-            AI-Powered Analysis
+      {/* ====== AI ANALYSIS SECTION - BIG & PROMINENT ====== */}
+      <Card className={`border-2 overflow-hidden ${hasAiData ? 'border-emerald-400 dark:border-emerald-600' : 'border-purple-400 dark:border-purple-600'}`}>
+        {/* Gradient Header Bar */}
+        <div className={`px-4 py-2.5 ${hasAiData
+          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-700 dark:to-teal-700'
+          : 'bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-700 dark:to-indigo-700'
+        }`}>
+          <div className="flex items-center gap-2">
+            <Brain className="h-5 w-5 text-white" />
+            <span className="text-sm font-bold text-white">AI-Powered Analysis</span>
             {hasAiData && (
-              <Badge variant="secondary" className="ml-auto text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+              <Badge className="ml-auto text-[10px] bg-white/20 text-white border-white/30 hover:bg-white/30">
                 Analyzed
               </Badge>
             )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+          </div>
+        </div>
+
+        <CardContent className="p-4 space-y-3">
           {aiLoading ? (
-            <div className="flex flex-col items-center gap-3 py-4">
-              <Loader2 className="h-8 w-8 text-emerald-500 animate-spin" />
+            <div className="flex flex-col items-center gap-3 py-6">
+              <div className="relative">
+                <div className="h-12 w-12 rounded-full border-4 border-purple-200 dark:border-purple-800" />
+                <Loader2 className="h-12 w-12 text-purple-600 dark:text-purple-400 animate-spin absolute inset-0" />
+              </div>
               <div className="text-center">
-                <p className="text-sm font-medium">Analyzing your file...</p>
+                <p className="text-sm font-semibold">Analyzing your file...</p>
                 <p className="text-xs text-muted-foreground mt-1">AI is generating summary, tags & description</p>
               </div>
             </div>
@@ -210,33 +217,33 @@ export function FileInfo({
             <>
               {/* AI Summary */}
               {aiData.aiSummary && (
-                <div className="flex items-start gap-2">
-                  <Lightbulb className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3">
+                  <Lightbulb className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1">Summary</p>
+                    <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 mb-1">AI Summary</p>
                     <p className="text-sm leading-relaxed">{aiData.aiSummary}</p>
                   </div>
                 </div>
               )}
               {/* AI Description */}
               {aiData.description && aiData.description !== aiData.aiSummary && (
-                <div className="flex items-start gap-2">
-                  <FileText className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                <div className="flex items-start gap-2.5 bg-blue-50 dark:bg-blue-950/30 rounded-lg p-3">
+                  <FileText className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1">Description</p>
+                    <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">Description</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">{aiData.description}</p>
                   </div>
                 </div>
               )}
               {/* AI Tags */}
               {parsedTags.length > 0 && (
-                <div className="flex items-start gap-2">
-                  <Tag className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                <div className="flex items-start gap-2.5 bg-purple-50 dark:bg-purple-950/30 rounded-lg p-3">
+                  <Tag className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1.5">Tags</p>
+                    <p className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1.5">Tags</p>
                     <div className="flex flex-wrap gap-1.5">
                       {parsedTags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                        <Badge key={tag} variant="secondary" className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
                           {tag.trim()}
                         </Badge>
                       ))}
@@ -244,32 +251,31 @@ export function FileInfo({
                   </div>
                 </div>
               )}
-              <Separator className="my-2" />
+              <Separator className="my-1" />
+              {/* BIG Re-analyze Button */}
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={handleAIAnalysis}
-                className="w-full text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                className="w-full h-11 text-sm font-semibold gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg transition-all"
               >
-                <RefreshCw className="h-3 w-3" />
+                <RefreshCw className="h-4 w-4" />
                 Re-analyze with AI
               </Button>
             </>
           ) : (
-            <div className="flex flex-col items-center gap-3 py-3">
-              <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-purple-500" />
+            <div className="flex flex-col items-center gap-4 py-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/40 dark:to-indigo-900/40 flex items-center justify-center">
+                <Sparkles className="h-8 w-8 text-purple-500" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-medium">No AI analysis yet</p>
-                <p className="text-xs text-muted-foreground mt-1">Let our AI generate a summary, description & tags for this file</p>
+                <p className="text-base font-semibold">No AI analysis yet</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-[220px] mx-auto">Let our AI generate a summary, description & smart tags for this file</p>
               </div>
+              {/* BIG Analyze Button */}
               <Button
                 onClick={handleAIAnalysis}
-                className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
-                size="sm"
+                className="w-full h-12 text-base font-bold gap-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                <Sparkles className="h-4 w-4" />
+                <Zap className="h-5 w-5" />
                 Analyze with AI
               </Button>
             </div>

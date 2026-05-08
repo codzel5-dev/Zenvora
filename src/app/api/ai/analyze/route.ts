@@ -147,7 +147,9 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const aiContent = data.choices?.[0]?.message?.content || data.content || data.text || '';
+    // YepAPI response format: { ok: true, data: { message: { content: "..." } } }
+    // Also support OpenAI-style format as fallback
+    const aiContent = data.data?.message?.content || data.choices?.[0]?.message?.content || data.content || data.text || '';
 
     if (!aiContent) {
       return NextResponse.json(
