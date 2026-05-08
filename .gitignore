@@ -50,5 +50,29 @@ test
 prompt
 
 server.log
+
+# Database
+/db/
+*.db
+*.db-journal
+
+# Uploads temp
+/upload/
+
 # Skills directory
 /skills/
+
+# Z scripts
+.zscripts/
+
+# Examples
+/examples/
+
+# Mini services
+/mini-services/
+
+# Download
+/download/
+
+# Worklog
+worklog.md
