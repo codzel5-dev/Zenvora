@@ -5,6 +5,7 @@
  * Supports: import via URL, conversion between formats, and export/download.
  * 
  * Key rotation is handled by cloudconvert-keys.ts
+ * Keys + OAuth credentials are managed in config/cloudconvert-keys.ts
  */
 
 import {
@@ -13,9 +14,13 @@ import {
   markKeyExhausted,
   disableKey,
   getRemainingQuota,
+  AvailableKeyResult,
 } from './cloudconvert-keys';
 
 const CLOUDCONVERT_API = 'https://api.cloudconvert.com/v2';
+
+// Track which API key was used for each job (for status polling)
+const jobKeyMap: Map<string, AvailableKeyResult> = new Map();
 
 // Supported conversion mappings
 export const CONVERSION_MAP: Record<string, string[]> = {
@@ -66,14 +71,6 @@ export const CONVERSION_MAP: Record<string, string[]> = {
  */
 export function getAvailableFormats(mimeType: string): string[] {
   return CONVERSION_MAP[mimeType] || [];
-}
-
-/**
- * Determine the CloudConvert operation name from input/output format
- */
-function getConvertOperation(inputFormat: string, outputFormat: string): string {
-  // Most conversions use the "convert" operation
-  return 'convert';
 }
 
 /**
@@ -135,42 +132,40 @@ interface CloudConvertResponse {
 /**
  * Create a CloudConvert conversion job
  * Flow: Import (URL) → Convert → Export (URL)
+ * 
+ * Uses the key rotation system which automatically picks the next available
+ * key (with its OAuth credentials) when the current key is exhausted.
  */
 export async function createConversionJob(
   fileUrl: string,
   inputMimeType: string,
   outputFormat: string,
   fileName: string
-): Promise<{ jobId: string; keySuffix: string }> {
-  const apiKey = getAvailableKey();
-  if (!apiKey) {
+): Promise<{ jobId: string; keyLabel: string }> {
+  const keyResult = getAvailableKey();
+  if (!keyResult) {
     const quota = getRemainingQuota();
     throw new Error(
-      `No available CloudConvert API keys. Daily quota exhausted (${quota.used}/${quota.limit}). Please try again tomorrow or add more API keys.`
+      `No available CloudConvert API keys. Daily quota exhausted (${quota.used}/${quota.limit}). Please try again tomorrow or add more API keys to config/cloudconvert-keys.ts`
     );
   }
 
   const inputFormat = getFormatFromMime(inputMimeType);
-  const operation = getConvertOperation(inputFormat, outputFormat);
 
-  // Build the job payload
+  // Build the job payload — CloudConvert API v2 expects task properties
+  // at the TOP LEVEL (not wrapped in a "data" object)
   const jobPayload = {
     tasks: {
       'import-url': {
         operation: 'import/url',
-        data: {
-          url: fileUrl,
-          filename: fileName,
-        },
+        url: fileUrl,
+        filename: fileName,
       },
       'convert-file': {
-        operation,
+        operation: 'convert',
         input: 'import-url',
-        data: {
-          input_format: inputFormat,
-          output_format: outputFormat,
-          engine: 'auto',  // Let CloudConvert choose the best engine
-        },
+        input_format: inputFormat,
+        output_format: outputFormat,
       },
       'export-url': {
         operation: 'export/url',
@@ -183,7 +178,7 @@ export async function createConversionJob(
     const response = await fetch(`${CLOUDCONVERT_API}/jobs`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${keyResult.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(jobPayload),
@@ -193,9 +188,9 @@ export async function createConversionJob(
       const errorText = await response.text().catch(() => 'Unknown error');
       console.error('[CloudConvert] Job creation failed:', response.status, errorText);
 
-      // Handle specific errors
+      // Handle specific errors with key rotation
       if (response.status === 401) {
-        disableKey(apiKey);
+        disableKey(keyResult.apiKey);
         // Retry with next available key
         return createConversionJob(fileUrl, inputMimeType, outputFormat, fileName);
       }
@@ -203,7 +198,7 @@ export async function createConversionJob(
         throw new Error(`Unsupported conversion: ${inputFormat} → ${outputFormat}. CloudConvert rejected this format pair.`);
       }
       if (response.status === 429) {
-        markKeyExhausted(apiKey);
+        markKeyExhausted(keyResult.apiKey);
         // Retry with next available key
         return createConversionJob(fileUrl, inputMimeType, outputFormat, fileName);
       }
@@ -213,14 +208,17 @@ export async function createConversionJob(
 
     const data: CloudConvertResponse = await response.json();
 
-    // Record successful usage
-    recordKeyUsage(apiKey);
+    // Record successful usage on this key
+    recordKeyUsage(keyResult.apiKey);
 
-    console.log(`[CloudConvert] Job created: ${data.id} (converting ${inputFormat} → ${outputFormat})`);
+    // Store which key was used for this job (needed for status polling)
+    jobKeyMap.set(data.id, keyResult);
+
+    console.log(`[CloudConvert] Job created: ${data.id} using ${keyResult.label} (converting ${inputFormat} → ${outputFormat})`);
 
     return {
       jobId: data.id,
-      keySuffix: `...${apiKey.slice(-8)}`,
+      keyLabel: keyResult.label,
     };
   } catch (error) {
     if (error instanceof Error && error.message.includes('No available CloudConvert API keys')) {
@@ -233,6 +231,7 @@ export async function createConversionJob(
 
 /**
  * Get the status of a CloudConvert job
+ * Uses the same API key that was used to create the job
  */
 export async function getJobStatus(jobId: string): Promise<{
   status: 'waiting' | 'processing' | 'finished' | 'error';
@@ -241,8 +240,15 @@ export async function getJobStatus(jobId: string): Promise<{
   outputFilename?: string;
   error?: string;
 }> {
-  const apiKey = getAvailableKey();
-  if (!apiKey) {
+  // Try to use the same key that created this job
+  let keyResult = jobKeyMap.get(jobId) || null;
+
+  // Fallback: if we don't know which key created this job, get any available one
+  if (!keyResult) {
+    keyResult = getAvailableKey();
+  }
+
+  if (!keyResult) {
     throw new Error('No available CloudConvert API keys to check job status');
   }
 
@@ -250,7 +256,7 @@ export async function getJobStatus(jobId: string): Promise<{
     const response = await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${keyResult.apiKey}`,
         'Content-Type': 'application/json',
       },
     });
@@ -281,7 +287,6 @@ export async function getJobStatus(jobId: string): Promise<{
       for (const task of data.tasks) {
         // Get progress from convert task
         if (task.operation === 'convert' && task.status === 'processing') {
-          // CloudConvert doesn't always provide percentage, we mark it as processing
           percent = 50;
         }
 

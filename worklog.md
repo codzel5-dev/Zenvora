@@ -21,6 +21,25 @@ Stage Summary:
 - Full CloudConvert integration built with key rotation system
 - Convert page supports: upload + convert, direct URL convert (from file page), drag-and-drop
 - Key rotation: When one key hits 10/day limit, automatically switches to next available key
-- To add more keys: Add to CLOUDCONVERT_API_KEYS env var (comma-separated) or edit cloudconvert-keys.ts fallback array
 - Supported conversions: Images, Documents, Video, Audio, Archives (200+ format pairs)
 - All API routes and pages compiled successfully
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Move CloudConvert keys from env vars to dedicated config file with OAuth credentials per key
+
+Work Log:
+- Created `src/config/cloudconvert-keys.ts` — Dedicated keys file with structured entries (apiKey + clientId + clientSecret + redirectUrl per key)
+- Updated `src/lib/services/cloudconvert-keys.ts` — Now reads from config file instead of env vars, exports AvailableKeyResult with full OAuth credentials, tracks job-to-key mapping
+- Updated `src/lib/services/cloudconvert.service.ts` — Fixed API payload format (removed invalid "data" wrapper), uses AvailableKeyResult with OAuth creds, stores job-key association for status polling
+- Removed CLOUDCONVERT_API_KEY from `.env.local` — Keys no longer in Netlify env vars
+- Verified TypeScript compilation and Next.js build both pass successfully
+
+Stage Summary:
+- Keys are now managed in `src/config/cloudconvert-keys.ts` (NOT env vars or Netlify)
+- Each key entry includes: apiKey, clientId, clientSecret, redirectUrl, label
+- When rotating keys, the system switches ALL credentials (API key + OAuth) together
+- To add more keys: just copy an entry in the config file and replace the values
+- API payload format fixed (CloudConvert v2 expects flat task properties, not nested in "data")
+- Build passes successfully
