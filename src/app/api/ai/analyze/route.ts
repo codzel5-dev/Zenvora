@@ -5,56 +5,63 @@ const YEPAPI_URL = 'https://api.yepapi.com/v1/ai/chat';
 
 function getAnalysisPrompt(mimeType: string, fileName: string): string {
   if (mimeType.startsWith('image/')) {
-    return `Analyze this image file named "${fileName}". Provide:
-1. A concise description of what the image contains (2-3 sentences)
-2. 3-5 relevant tags separated by commas
+    return `You are an AI file analyst. Analyze this image file named "${fileName}". Provide:
+1. A detailed description of what the image contains (2-3 sentences, be specific about objects, colors, composition, and context)
+2. A concise one-sentence AI summary of the image content
+3. 5-8 relevant tags separated by commas (be specific and descriptive)
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
   }
 
   if (mimeType.startsWith('video/')) {
-    return `Analyze this video file named "${fileName}". Based on the filename, provide:
-1. A concise description of what the video likely contains (2-3 sentences)
-2. 3-5 relevant tags separated by commas
+    return `You are an AI file analyst. Analyze this video file named "${fileName}". Based on the filename and any context you can infer, provide:
+1. A detailed description of what the video likely contains (2-3 sentences)
+2. A concise one-sentence AI summary
+3. 5-8 relevant tags separated by commas
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
   }
 
   if (mimeType.startsWith('audio/')) {
-    return `Analyze this audio file named "${fileName}". Based on the filename, provide:
-1. A concise description of what the audio likely contains (2-3 sentences)
-2. 3-5 relevant tags separated by commas
+    return `You are an AI file analyst. Analyze this audio file named "${fileName}". Based on the filename and any context you can infer, provide:
+1. A detailed description of what the audio likely contains (2-3 sentences)
+2. A concise one-sentence AI summary
+3. 5-8 relevant tags separated by commas
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
   }
 
   if (mimeType === 'application/pdf') {
-    return `Analyze this PDF document named "${fileName}". Based on the filename, provide:
-1. A summary of what the PDF document likely contains (2-3 sentences)
-2. 3-5 relevant tags separated by commas
+    return `You are an AI document analyst. Analyze this PDF document named "${fileName}". Based on the filename and any context you can infer, provide:
+1. A detailed summary of what the PDF document likely contains (2-3 sentences, include likely topics, sections, or data types)
+2. A concise one-sentence AI summary
+3. 5-8 relevant tags/keywords separated by commas
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
   }
 
   if (mimeType.startsWith('text/') || mimeType.includes('json') || mimeType.includes('xml') || mimeType.includes('javascript') || mimeType.includes('typescript')) {
-    return `Analyze this code/text file named "${fileName}". Based on the filename and extension, provide:
-1. A summary of what this file likely contains or its purpose (2-3 sentences)
-2. 3-5 relevant keywords/tags separated by commas
+    return `You are an AI code and text analyst. Analyze this file named "${fileName}". Based on the filename and extension, provide:
+1. A detailed summary of what this file likely contains or its purpose (2-3 sentences, include likely language, framework, or purpose)
+2. A concise one-sentence AI summary
+3. 5-8 relevant tags/keywords separated by commas (include language, framework, or topic)
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
   }
 
-  return `Analyze this file named "${fileName}" (type: ${mimeType}). Provide:
-1. A concise description of what the file likely contains (2-3 sentences)
-2. 3-5 relevant tags separated by commas
+  // Generic file
+  return `You are an AI file analyst. Analyze this file named "${fileName}" (type: ${mimeType}). Based on the filename and type, provide:
+1. A detailed description of what the file likely contains (2-3 sentences)
+2. A concise one-sentence AI summary
+3. 5-8 relevant tags separated by commas
 
-Respond in this exact JSON format:
-{"description": "your description here", "tags": "tag1, tag2, tag3"}`;
+Respond ONLY in this exact JSON format, no other text:
+{"description": "your detailed description here", "aiSummary": "your concise summary here", "tags": "tag1, tag2, tag3, tag4, tag5"}`;
 }
 
 export async function POST(request: NextRequest) {
@@ -84,7 +91,7 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.YEPAPI_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'AI analysis is not configured.' },
+        { error: 'AI analysis is not configured. YEPAPI_KEY is missing.' },
         { status: 503 }
       );
     }
@@ -93,7 +100,7 @@ export async function POST(request: NextRequest) {
     const messages: Array<{ role: string; content: string | Array<{ type: string; text?: string; image_url?: { url: string } }> }> = [];
 
     if (mimeType.startsWith('image/')) {
-      // For images, include the image URL in the message
+      // For images, include the image URL in the message for visual analysis
       messages.push({
         role: 'user',
         content: [
@@ -115,7 +122,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Call YepAPI
+    // Call YepAPI with increased token limit for better responses
     const response = await fetch(YEPAPI_URL, {
       method: 'POST',
       headers: {
@@ -125,7 +132,8 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: 'z-ai/glm-5.1',
         messages,
-        maxTokens: 500,
+        maxTokens: 800,
+        temperature: 0.3,
       }),
     });
 
@@ -133,7 +141,7 @@ export async function POST(request: NextRequest) {
       const errorText = await response.text().catch(() => 'Unknown error');
       console.error('YepAPI error:', response.status, errorText);
       return NextResponse.json(
-        { error: 'AI analysis failed.' },
+        { error: `AI analysis failed: ${response.status}` },
         { status: 500 }
       );
     }
@@ -141,8 +149,16 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
     const aiContent = data.choices?.[0]?.message?.content || data.content || data.text || '';
 
+    if (!aiContent) {
+      return NextResponse.json(
+        { error: 'AI returned empty response.' },
+        { status: 500 }
+      );
+    }
+
     // Parse the AI response
     let description = '';
+    let aiSummary = '';
     let tags = '';
 
     try {
@@ -151,26 +167,36 @@ export async function POST(request: NextRequest) {
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
         description = parsed.description || '';
+        aiSummary = parsed.aiSummary || parsed.summary || '';
         tags = parsed.tags || '';
       }
     } catch {
       // If JSON parsing fails, use the raw response as description
       description = aiContent.substring(0, 300);
+      aiSummary = aiContent.substring(0, 150);
     }
 
-    // Update the file record
+    // If aiSummary is empty but description exists, create a short summary
+    if (!aiSummary && description) {
+      aiSummary = description.length > 150 ? description.substring(0, 147) + '...' : description;
+    }
+
+    // Update the file record with all AI data
     await db.uploadedFile.update({
       where: { id: fileId },
       data: {
-        aiSummary: description,
+        aiSummary: aiSummary || description,
         tags: tags || file.tags,
         description: description || file.description,
       },
     });
 
+    console.log(`AI analysis completed for file: ${file.originalName}`);
+
     return NextResponse.json({
       success: true,
-      aiSummary: description,
+      aiSummary: aiSummary || description,
+      description,
       tags,
     });
   } catch (error) {

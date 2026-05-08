@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { FilePreview } from '@/components/file/file-preview';
 import { FileInfo } from '@/components/file/file-info';
 import { FileCard } from '@/components/file/file-card';
@@ -33,10 +34,30 @@ interface FilePreviewClientProps {
 export function FilePreviewClient({ file }: FilePreviewClientProps) {
   const [relatedFiles, setRelatedFiles] = React.useState<FileData[]>([]);
   const [loadingRelated, setLoadingRelated] = React.useState(true);
+  const [aiAnalyzed, setAiAnalyzed] = React.useState(!!file.aiSummary);
 
   React.useEffect(() => {
     fetchRelatedFiles();
   }, [file.id, file.category, file.mimeType]);
+
+  // Listen for AI analysis completion from FileInfo
+  React.useEffect(() => {
+    const interval = setInterval(async () => {
+      if (aiAnalyzed) return;
+      try {
+        const res = await fetch(`/api/files/${file.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.aiSummary) {
+            setAiAnalyzed(true);
+          }
+        }
+      } catch {
+        // silently fail
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [file.id, aiAnalyzed]);
 
   const fetchRelatedFiles = async () => {
     try {
@@ -65,11 +86,24 @@ export function FilePreviewClient({ file }: FilePreviewClientProps) {
         Back to Home
       </Link>
 
-      {/* File Name Header */}
+      {/* File Name Header with AI Badge */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">
-          {file.originalName}
-        </h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">
+            {file.originalName}
+          </h1>
+          {aiAnalyzed ? (
+            <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 gap-1.5">
+              <Brain className="h-3 w-3" />
+              AI Analyzed
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="gap-1.5 text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-700">
+              <Sparkles className="h-3 w-3" />
+              AI Ready
+            </Badge>
+          )}
+        </div>
         <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
           <span>{file.fileSizeFormatted}</span>
           <span>·</span>

@@ -35,10 +35,11 @@ function generateDescriptionFromFilename(fileName: string): string {
 }
 
 function triggerAIAnalysis(fileId: string, fileUrl: string, mimeType: string) {
-  // Fire-and-forget AI analysis
-  const apiUrl = process.env.NEXT_PUBLIC_APP_URL
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/api/ai/analyze`
-    : `http://localhost:3000/api/ai/analyze`;
+  // Fire-and-forget AI analysis - use correct URL for both dev and production
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
+  const apiUrl = `${siteUrl}/api/ai/analyze`;
 
   fetch(apiUrl, {
     method: 'POST',
