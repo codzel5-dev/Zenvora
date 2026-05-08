@@ -11,6 +11,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { FileUploader } from '@/components/upload/file-uploader';
 import { CtaSection } from '@/components/cta-section';
+import { AdBanner } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
   title: 'Free File Upload & Sharing Service',
@@ -92,6 +93,11 @@ export default function HomePage() {
 
           {/* Upload Component */}
           <FileUploader />
+
+          {/* Ad Banner */}
+          <div className="mt-8 max-w-4xl mx-auto">
+            <AdBanner />
+          </div>
 
           {/* Stats */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
