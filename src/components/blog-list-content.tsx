@@ -52,7 +52,7 @@ export function BlogListContent() {
       {/* Hero */}
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-          The FileVault{' '}
+          The Zenvoora{' '}
           <span className="text-emerald-600 dark:text-emerald-400">Blog</span>
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">

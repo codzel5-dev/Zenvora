@@ -35,7 +35,7 @@ const faqs = [
   {
     question: 'Do I need to create an account?',
     answer:
-      'No. FileVault is designed to work without any registration. Simply drag and drop your file, get the link, and share it. No email, no password, no verification required.',
+      'No. Zenvoora is designed to work without any registration. Simply drag and drop your file, get the link, and share it. No email, no password, no verification required.',
   },
   {
     question: 'How long are files stored?',
@@ -190,7 +190,7 @@ export function ContactContent() {
                 <div>
                   <h3 className="text-sm font-semibold">Email</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    support@filevault.app
+                    support@zenvoora.com
                   </p>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export function ContactContent() {
                   <h3 className="text-sm font-semibold">DMCA & Abuse</h3>
                   <p className="text-sm text-muted-foreground mt-1">
                     For copyright or abuse reports, please contact
-                    abuse@filevault.app with the file URL and details.
+                    abuse@zenvoora.com with the file URL and details.
                   </p>
                 </div>
               </div>
@@ -215,7 +215,7 @@ export function ContactContent() {
           <HelpCircle className="h-8 w-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" />
           <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
           <p className="text-muted-foreground mt-2">
-            Quick answers to common questions about FileVault
+            Quick answers to common questions about Zenvoora
           </p>
         </div>
 

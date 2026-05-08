@@ -4,11 +4,11 @@ import { ContactContent } from '@/components/contact-content';
 export const metadata: Metadata = {
   title: 'Contact Us',
   description:
-    'Get in touch with the FileVault team. Send us a message, ask a question, or report an issue. We typically respond within 24 hours.',
+    'Get in touch with the Zenvoora team. Send us a message, ask a question, or report an issue. We typically respond within 24 hours.',
   openGraph: {
-    title: 'Contact Us — FileVault',
+    title: 'Contact Us — Zenvoora',
     description:
-      'Get in touch with the FileVault team. Send us a message, ask a question, or report an issue.',
+      'Get in touch with the Zenvoora team. Send us a message, ask a question, or report an issue.',
   },
 };
 

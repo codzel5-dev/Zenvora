@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,7 +12,6 @@ import {
   X,
   Sun,
   Moon,
-  Shield,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -39,11 +39,9 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white transition-transform group-hover:scale-105">
-            <Shield className="h-5 w-5" />
-          </div>
+          <Image src="/logo.png" alt="Zenvoora" width={36} height={36} className="rounded-lg transition-transform group-hover:scale-105" />
           <span className="text-xl font-bold tracking-tight">
-            File<span className="text-emerald-600 dark:text-emerald-400">Vault</span>
+            Zen<span className="text-emerald-600 dark:text-emerald-400">voora</span>
           </span>
         </Link>
 

@@ -5,11 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 export const metadata: Metadata = {
   title: 'About Us',
   description:
-    'Learn about FileVault — our mission, values, and why we built a free file sharing service that puts users first.',
+    'Learn about Zenvoora — our mission, values, and why we built a free file sharing service that puts users first.',
   openGraph: {
-    title: 'About FileVault',
+    title: 'About Zenvoora',
     description:
-      'Learn about FileVault — our mission, values, and why we built a free file sharing service that puts users first.',
+      'Learn about Zenvoora — our mission, values, and why we built a free file sharing service that puts users first.',
   },
 };
 
@@ -18,13 +18,13 @@ const values = [
     icon: Shield,
     title: 'Security First',
     description:
-      'Every file uploaded to FileVault is scanned for threats. We block dangerous file types and continuously monitor for malicious content. Your safety is non-negotiable.',
+      'Every file uploaded to Zenvoora is scanned for threats. We block dangerous file types and continuously monitor for malicious content. Your safety is non-negotiable.',
   },
   {
     icon: Heart,
     title: 'Free Forever',
     description:
-      'We believe file sharing should be free and accessible to everyone. No premium tiers, no hidden costs, no bait-and-switch. FileVault is and will remain 100% free.',
+      'We believe file sharing should be free and accessible to everyone. No premium tiers, no hidden costs, no bait-and-switch. Zenvoora is and will remain 100% free.',
   },
   {
     icon: Zap,
@@ -48,7 +48,7 @@ const values = [
     icon: Globe,
     title: 'Global Accessibility',
     description:
-      'FileVault works in every country, on every device, without restrictions. We optimize for low-bandwidth connections and support all modern browsers.',
+      'Zenvoora works in every country, on every device, without restrictions. We optimize for low-bandwidth connections and support all modern browsers.',
   },
 ];
 
@@ -59,10 +59,10 @@ export default function AboutPage() {
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
           About{' '}
-          <span className="text-emerald-600 dark:text-emerald-400">FileVault</span>
+          <span className="text-emerald-600 dark:text-emerald-400">Zenvoora</span>
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          We built FileVault because file sharing should be simple, fast, and free.
+          We built Zenvoora because file sharing should be simple, fast, and free.
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
         <div className="prose prose-neutral dark:prose-invert max-w-none space-y-4 text-muted-foreground">
           <p>
-            FileVault exists to solve a simple problem: sharing files online should not be
+            Zenvoora exists to solve a simple problem: sharing files online should not be
             complicated. Too many services require accounts, bombard you with ads, limit
             file sizes to tiny amounts, or charge for basic functionality.
           </p>
@@ -91,22 +91,22 @@ export default function AboutPage() {
 
       {/* Why We Built This */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-4">Why We Built FileVault</h2>
+        <h2 className="text-2xl font-bold mb-4">Why We Built Zenvoora</h2>
         <div className="prose prose-neutral dark:prose-invert max-w-none space-y-4 text-muted-foreground">
           <p>
-            Before FileVault, the free file sharing landscape was frustrating. Services
+            Before Zenvoora, the free file sharing landscape was frustrating. Services
             either required registration, had tiny file size limits, were filled with
             intrusive advertising, or had slow download speeds. We knew there had to be
             a better way.
           </p>
           <p>
-            We started FileVault in 2024 with a clear vision: create a file sharing
+            We started Zenvoora in 2024 with a clear vision: create a file sharing
             service that respects its users. One that is fast, secure, and genuinely
             free. A service where the only thing you need to think about is which file
             to share next.
           </p>
           <p>
-            Today, FileVault serves hundreds of thousands of users across 190+ countries.
+            Today, Zenvoora serves hundreds of thousands of users across 190+ countries.
             Students share project files, professionals collaborate on documents, creators
             distribute their work, and families share memories — all through the same
             simple interface.
@@ -143,7 +143,7 @@ export default function AboutPage() {
           We are a small team of engineers and designers who care deeply about building
           products that work well and treat people right. Every feature we add, every line
           of code we write, is in service of making file sharing easier for you. Thank you
-          for using FileVault — your trust means everything to us.
+          for using Zenvoora — your trust means everything to us.
         </p>
       </section>
     </div>

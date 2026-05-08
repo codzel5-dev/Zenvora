@@ -3,11 +3,11 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
   description:
-    'Read FileVault\'s terms and conditions. Understand the rules for using our free file upload and sharing service, including acceptable use and DMCA policy.',
+    'Read Zenvoora\'s terms and conditions. Understand the rules for using our free file upload and sharing service, including acceptable use and DMCA policy.',
   openGraph: {
-    title: 'Terms & Conditions — FileVault',
+    title: 'Terms & Conditions — Zenvoora',
     description:
-      'Understand the rules for using FileVault, including acceptable use policy, prohibited content, and DMCA procedures.',
+      'Understand the rules for using Zenvoora, including acceptable use policy, prohibited content, and DMCA procedures.',
   },
 };
 
@@ -25,7 +25,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">1. Acceptance of Terms</h2>
           <p>
-            By accessing and using FileVault (the &quot;Service&quot;), you accept and agree to be bound
+            By accessing and using Zenvoora (the &quot;Service&quot;), you accept and agree to be bound
             by these Terms and Conditions. If you do not agree to these terms, please do not use
             the Service. Your continued use of the Service constitutes acceptance of any updates
             to these terms.
@@ -35,7 +35,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">2. Description of Service</h2>
           <p>
-            FileVault provides a free file upload and sharing service that allows users to upload
+            Zenvoora provides a free file upload and sharing service that allows users to upload
             files and share them via unique URLs. The Service is provided &quot;as is&quot; and &quot;as available&quot;
             without warranties of any kind, either express or implied.
           </p>
@@ -53,7 +53,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold text-foreground">3. Acceptable Use Policy</h2>
-          <p>You agree to use FileVault only for lawful purposes and in accordance with these Terms. You agree NOT to:</p>
+          <p>You agree to use Zenvoora only for lawful purposes and in accordance with these Terms. You agree NOT to:</p>
           <ul className="list-disc pl-6 space-y-2 mt-3">
             <li>Upload any content that is illegal, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or otherwise objectionable</li>
             <li>Upload malware, viruses, trojans, worms, or any other malicious software</li>
@@ -90,12 +90,12 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">5. User Content</h2>
           <p>
-            You retain all rights to the content you upload to FileVault. By uploading a file, you grant
-            FileVault a limited, non-exclusive license to store, serve, and distribute the file via the
+            You retain all rights to the content you upload to Zenvoora. By uploading a file, you grant
+            Zenvoora a limited, non-exclusive license to store, serve, and distribute the file via the
             unique link generated for that upload.
           </p>
           <p className="mt-3">
-            You are solely responsible for the content you upload. FileVault does not pre-screen
+            You are solely responsible for the content you upload. Zenvoora does not pre-screen
             uploaded content, but reserves the right to remove any content that violates these Terms
             or that we determine, in our sole discretion, to be objectionable or harmful.
           </p>
@@ -105,7 +105,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-semibold text-foreground">6. File Retention and Deletion</h2>
           <ul className="list-disc pl-6 space-y-2 mt-3">
             <li><strong className="text-foreground">Retention Period:</strong> Files are stored as long as they are being actively accessed. Files that have not been downloaded for 90 consecutive days may be automatically deleted to manage storage capacity.</li>
-            <li><strong className="text-foreground">No Guarantee of Persistence:</strong> FileVault does not guarantee that any uploaded file will be stored indefinitely. We recommend keeping important files backed up elsewhere.</li>
+            <li><strong className="text-foreground">No Guarantee of Persistence:</strong> Zenvoora does not guarantee that any uploaded file will be stored indefinitely. We recommend keeping important files backed up elsewhere.</li>
             <li><strong className="text-foreground">Manual Deletion:</strong> We may remove files that violate these Terms, are reported through our DMCA process, or are identified as malicious.</li>
           </ul>
         </section>
@@ -113,22 +113,22 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">7. DMCA and Copyright Notices</h2>
           <p>
-            FileVault respects the intellectual property rights of others and expects its users to do
+            Zenvoora respects the intellectual property rights of others and expects its users to do
             the same. We will respond to notices of alleged copyright infringement that comply with
             the Digital Millennium Copyright Act (DMCA).
           </p>
           <p className="mt-3">
-            If you believe that your copyrighted work has been uploaded to FileVault without
+            If you believe that your copyrighted work has been uploaded to Zenvoora without
             authorization, please send a DMCA takedown notice to:
           </p>
           <ul className="list-none pl-6 space-y-1 mt-3">
-            <li><strong className="text-foreground">Email:</strong> dmca@filevault.app</li>
+            <li><strong className="text-foreground">Email:</strong> dmca@zenvoora.com</li>
             <li><strong className="text-foreground">Subject Line:</strong> DMCA Takedown Request</li>
           </ul>
           <p className="mt-3">Your DMCA notice must include:</p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
             <li>A description of the copyrighted work you claim has been infringed</li>
-            <li>The URL of the allegedly infringing file on FileVault</li>
+            <li>The URL of the allegedly infringing file on Zenvoora</li>
             <li>Your contact information (name, address, telephone number, and email)</li>
             <li>A statement that you have a good faith belief that the use is not authorized</li>
             <li>A statement, under penalty of perjury, that the information in your notice is accurate and that you are authorized to act on behalf of the copyright owner</li>
@@ -143,7 +143,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">8. Rate Limiting</h2>
           <p>
-            To ensure fair usage and service stability, FileVault enforces rate limits:
+            To ensure fair usage and service stability, Zenvoora enforces rate limits:
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
             <li><strong className="text-foreground">File Uploads:</strong> Maximum 10 uploads per hour per IP address</li>
@@ -158,7 +158,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">9. Disclaimer of Warranties</h2>
           <p>
-            FILEVAULT IS PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY
+            ZENVOORA IS PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY
             KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF
             MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
           </p>
@@ -176,7 +176,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">10. Limitation of Liability</h2>
           <p>
-            TO THE MAXIMUM EXTENT PERMITTED BY LAW, FILEVAULT AND ITS OPERATORS SHALL NOT BE LIABLE
+            TO THE MAXIMUM EXTENT PERMITTED BY LAW, ZENVOORA AND ITS OPERATORS SHALL NOT BE LIABLE
             FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF
             PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE,
             GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM:
@@ -193,7 +193,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">11. Indemnification</h2>
           <p>
-            You agree to indemnify and hold harmless FileVault and its operators from any claims,
+            You agree to indemnify and hold harmless Zenvoora and its operators from any claims,
             damages, losses, liabilities, and expenses (including reasonable attorneys&apos; fees) arising
             out of or in connection with your use of the Service or your violation of these Terms,
             including but not limited to any content you upload.
@@ -228,8 +228,8 @@ export default function TermsPage() {
             If you have questions about these Terms, please contact us:
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
-            <li>Email: legal@filevault.app</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">filevault.app/contact</a></li>
+            <li>Email: legal@zenvoora.com</li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.netlify.app/contact</a></li>
           </ul>
         </section>
       </div>

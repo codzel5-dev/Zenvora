@@ -3,11 +3,11 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'Read FileVault\'s privacy policy. Learn how we collect, use, and protect your data when you use our free file upload and sharing service.',
+    'Read Zenvoora\'s privacy policy. Learn how we collect, use, and protect your data when you use our free file upload and sharing service.',
   openGraph: {
-    title: 'Privacy Policy — FileVault',
+    title: 'Privacy Policy — Zenvoora',
     description:
-      'Learn how FileVault handles your data, what information we collect, and how we protect your privacy.',
+      'Learn how Zenvoora handles your data, what information we collect, and how we protect your privacy.',
   },
 };
 
@@ -25,9 +25,9 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">1. Introduction</h2>
           <p>
-            FileVault (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
+            Zenvoora (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your
-            information when you use our file upload and sharing service at filevault.app
+            information when you use our file upload and sharing service at zenvoora.netlify.app
             (the &quot;Service&quot;). By using the Service, you agree to the collection and use of
             information in accordance with this policy.
           </p>
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">5. Cookies and Local Storage</h2>
           <p>
-            FileVault uses minimal cookies and local storage:
+            Zenvoora uses minimal cookies and local storage:
           </p>
           <ul className="list-disc pl-6 space-y-2 mt-3">
             <li>
@@ -122,7 +122,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">6. Third-Party Services</h2>
           <p>
-            We use the following third-party services to operate FileVault:
+            We use the following third-party services to operate Zenvoora:
           </p>
           <ul className="list-disc pl-6 space-y-2 mt-3">
             <li>
@@ -181,7 +181,7 @@ export default function PrivacyPage() {
             <li>The right to data portability</li>
           </ul>
           <p className="mt-3">
-            To exercise any of these rights, please contact us at privacy@filevault.app.
+            To exercise any of these rights, please contact us at privacy@zenvoora.com.
             We will respond to all legitimate requests within 30 days.
           </p>
         </section>
@@ -189,7 +189,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground">10. Children&apos;s Privacy</h2>
           <p>
-            FileVault is not directed at children under the age of 13. We do not knowingly collect
+            Zenvoora is not directed at children under the age of 13. We do not knowingly collect
             personal information from children under 13. If we become aware that we have collected
             personal data from a child under 13, we will take steps to delete that information
             promptly.
@@ -211,8 +211,8 @@ export default function PrivacyPage() {
             If you have questions about this Privacy Policy or our data practices, please contact us:
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
-            <li>Email: privacy@filevault.app</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">filevault.app/contact</a></li>
+            <li>Email: privacy@zenvoora.com</li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.netlify.app/contact</a></li>
           </ul>
         </section>
       </div>

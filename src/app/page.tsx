@@ -16,9 +16,9 @@ import { AdBanner } from '@/components/ads/ad-banner';
 export const metadata: Metadata = {
   title: 'Free File Upload & Sharing Service',
   description:
-    'Upload and share files instantly with FileVault. Free, fast, and secure file hosting. No registration required. Share images, videos, documents, and more up to 100MB.',
+    'Upload and share files instantly with Zenvoora. Free, fast, and secure file hosting. No registration required. Share images, videos, documents, and more up to 100MB.',
   openGraph: {
-    title: 'FileVault — Free File Upload & Sharing Service',
+    title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting with no registration required.',
   },
@@ -53,7 +53,7 @@ const features = [
     icon: Heart,
     title: '100% Free',
     description:
-      'No hidden fees, no premium tiers, no credit card required. FileVault is completely free for everyone, always.',
+      'No hidden fees, no premium tiers, no credit card required. Zenvoora is completely free for everyone, always.',
   },
   {
     icon: Smartphone,
@@ -119,10 +119,10 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold">
               Why Choose{' '}
-              <span className="text-emerald-600 dark:text-emerald-400">FileVault</span>?
+              <span className="text-emerald-600 dark:text-emerald-400">Zenvoora</span>?
             </h2>
             <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-              We built FileVault to make file sharing simple, fast, and safe.
+              We built Zenvoora to make file sharing simple, fast, and safe.
               No ads, no tracking, no catches — just a great service you can trust.
             </p>
           </div>

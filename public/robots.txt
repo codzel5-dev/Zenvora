@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://filevault.app/sitemap.xml
+Sitemap: https://zenvoora.netlify.app/sitemap.xml

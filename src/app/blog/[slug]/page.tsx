@@ -8,7 +8,7 @@ interface BlogPostPageProps {
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://filevault.app';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.netlify.app';
     const response = await fetch(`${baseUrl}/api/blog/${slug}`, { next: { revalidate: 3600 } });
     if (response.ok) {
       const post = await response.json();
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
   return {
     title: 'Blog Post',
-    description: 'Read this article on the FileVault blog.',
+    description: 'Read this article on the Zenvoora blog.',
   };
 }
 

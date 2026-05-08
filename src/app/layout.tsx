@@ -19,11 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'FileVault — Free File Upload & Sharing Service',
-    template: '%s | FileVault',
+    default: 'Zenvoora — Free File Upload & Sharing Service',
+    template: '%s | Zenvoora',
   },
   description:
-    'Upload and share files instantly with FileVault. Free, fast, and secure file hosting. No registration required. Share images, videos, documents, and more.',
+    'Upload and share files instantly with Zenvoora. Free, fast, and secure file hosting. No registration required. Share images, videos, documents, and more.',
   keywords: [
     'file upload',
     'file sharing',
@@ -33,23 +33,23 @@ export const metadata: Metadata = {
     'file transfer',
     'send files',
     'upload files free',
-    'FileVault',
+    'Zenvoora',
   ],
-  authors: [{ name: 'FileVault' }],
+  authors: [{ name: 'Zenvoora' }],
   icons: {
     icon: '/favicon.ico',
   },
   openGraph: {
-    title: 'FileVault — Free File Upload & Sharing Service',
+    title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting with no registration required.',
-    url: 'https://filevault.app',
-    siteName: 'FileVault',
+    url: 'https://zenvoora.netlify.app',
+    siteName: 'Zenvoora',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FileVault — Free File Upload & Sharing Service',
+    title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting.',
   },

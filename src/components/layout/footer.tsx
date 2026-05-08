@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Shield } from 'lucide-react';
+import Image from 'next/image';
 
 const footerLinks = {
   product: [
@@ -24,11 +24,9 @@ export function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-                <Shield className="h-4 w-4" />
-              </div>
+              <Image src="/logo.png" alt="Zenvoora" width={32} height={32} className="rounded-lg transition-transform group-hover:scale-105" />
               <span className="text-lg font-bold tracking-tight">
-                File<span className="text-emerald-600 dark:text-emerald-400">Vault</span>
+                Zen<span className="text-emerald-600 dark:text-emerald-400">voora</span>
               </span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground max-w-xs">
@@ -81,7 +79,7 @@ export function Footer() {
 
         <div className="mt-10 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            &copy; {currentYear} FileVault. All rights reserved.
+            &copy; {currentYear} Zenvoora. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Free file sharing — no registration required.

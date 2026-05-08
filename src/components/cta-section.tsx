@@ -10,7 +10,7 @@ export function CtaSection() {
           Ready to Share Your Files?
         </h2>
         <p className="mt-2 text-emerald-100 max-w-lg mx-auto">
-          Join hundreds of thousands of users who trust FileVault for fast, free, and secure file sharing.
+          Join hundreds of thousands of users who trust Zenvoora for fast, free, and secure file sharing.
         </p>
         <a
           href="#"
