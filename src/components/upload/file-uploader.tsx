@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,6 +15,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  Eye,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -30,11 +33,14 @@ interface UploadedFileResult {
   fileSize: number;
   fileSizeFormatted: string;
   mimeType: string;
+  category: string;
+  description: string;
   createdAt: string;
   remainingUploads: number;
 }
 
 export function FileUploader() {
+  const router = useRouter();
   const [uploadState, setUploadState] = React.useState<UploadState>('idle');
   const [progress, setProgress] = React.useState(0);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
@@ -322,8 +328,27 @@ export function FileUploader() {
                 </div>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-md">
+                <Button
+                  onClick={() => router.push(`/file/${result.id}`)}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+                >
+                  <Eye className="h-4 w-4" />
+                  View File Page
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => window.open(result.fileUrl, '_blank')}
+                  className="flex-1 gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open File
+                </Button>
+              </div>
+
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={reset}
                 className="mt-2 gap-2"
               >

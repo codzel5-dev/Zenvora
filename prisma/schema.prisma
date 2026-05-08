@@ -20,6 +20,13 @@ model UploadedFile {
   createdAt     DateTime  @default(now())
   expiresAt     DateTime?
   downloadCount Int       @default(0)
+
+  // Smart File Platform fields
+  description   String    @default("")
+  tags          String    @default("")
+  category      String    @default("general")
+  aiSummary     String    @default("")
+  thumbnailUrl  String    @default("")
 }
 
 model BlogPost {

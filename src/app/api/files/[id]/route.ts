@@ -35,6 +35,45 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const file = await db.uploadedFile.findUnique({
+      where: { id },
+    });
+
+    if (!file) {
+      return NextResponse.json(
+        { error: 'File not found.' },
+        { status: 404 }
+      );
+    }
+
+    // Increment download count
+    const updated = await db.uploadedFile.update({
+      where: { id },
+      data: {
+        downloadCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    return NextResponse.json({
+      downloadCount: updated.downloadCount,
+    });
+  } catch (error) {
+    console.error('Patch file error:', error);
+    return NextResponse.json(
+      { error: 'Failed to update file.' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
