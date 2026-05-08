@@ -6,12 +6,10 @@ import {
   Globe,
   Lock,
   Heart,
-  Clock,
   Smartphone,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileUploader } from '@/components/upload/file-uploader';
-import { FileHistory } from '@/components/upload/file-history';
 import { CtaSection } from '@/components/cta-section';
 
 export const metadata: Metadata = {
@@ -106,17 +104,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Recent Uploads Section */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 mb-6">
-            <Clock className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-            <h2 className="text-xl font-semibold">Recent Uploads</h2>
-          </div>
-          <FileHistory />
         </div>
       </section>
 
