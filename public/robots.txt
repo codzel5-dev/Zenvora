@@ -1,5 +1,16 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /_next/
 
+# Sitemaps
 Sitemap: https://zenvoora.netlify.app/sitemap.xml
+
+# Crawl-delay (respectful crawling)
+Crawl-delay: 1
+
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Crawl-delay: 0
