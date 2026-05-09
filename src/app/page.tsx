@@ -306,12 +306,12 @@ export default function HomePage() {
       </section>
 
       {/* File Converter Section */}
-      <section className="py-16 sm:py-20">
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-amber-50/60 via-transparent to-transparent dark:from-amber-950/20 dark:via-transparent dark:to-transparent">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 mb-4">
               <RefreshCw className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              <span className="text-sm font-medium text-amber-700 dark:text-amber-300">200+ Formats</span>
+              <span className="text-sm font-medium text-amber-700 dark:text-amber-300">200+ Formats Supported</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold">
               Free <span className="text-amber-600 dark:text-amber-400">File Converter</span>
@@ -322,47 +322,114 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            {/* Left: Format categories */}
-            <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {[
-                { icon: ImageIcon, label: 'Images', formats: ['PNG', 'JPG', 'WebP', 'GIF', 'SVG', 'BMP', 'ICO', 'TIFF'], color: 'emerald' },
-                { icon: FileText, label: 'Documents', formats: ['PDF', 'DOCX', 'XLSX', 'PPTX', 'TXT', 'HTML', 'CSV', 'RTF'], color: 'blue' },
-                { icon: Video, label: 'Video', formats: ['MP4', 'WebM', 'AVI', 'MOV', 'MKV', 'GIF'], color: 'purple' },
-                { icon: Music, label: 'Audio', formats: ['MP3', 'WAV', 'OGG', 'FLAC', 'AAC', 'WMA'], color: 'pink' },
-                { icon: Archive, label: 'Archives', formats: ['ZIP', 'TAR', 'GZ', '7Z', 'RAR'], color: 'yellow' },
-                { icon: Sparkles, label: 'AI-Powered', formats: ['Smart Analysis', 'Auto Tags', 'Summaries'], color: 'amber' },
-              ].map((cat) => (
-                <Card key={cat.label} className="border-border/50 hover:border-amber-300 dark:hover:border-amber-700 transition-colors">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <cat.icon className={`h-5 w-5 text-${cat.color}-600 dark:text-${cat.color}-400`} />
-                      <span className="font-semibold text-sm">{cat.label}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {cat.formats.map(f => (
-                        <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          {/* Format Categories Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+            {/* Images */}
+            <Card className="border-border/50 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mx-auto mb-3">
+                  <ImageIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">Images</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['PNG', 'JPG', 'WebP', 'GIF', 'SVG', 'BMP'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-            {/* Right: CTA card */}
-            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border-amber-200 dark:border-amber-800">
-              <CardContent className="p-6 flex flex-col items-center text-center">
+            {/* Documents */}
+            <Card className="border-border/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mx-auto mb-3">
+                  <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">Documents</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['PDF', 'DOCX', 'XLSX', 'PPTX', 'TXT', 'CSV'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Video */}
+            <Card className="border-border/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center mx-auto mb-3">
+                  <Video className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">Video</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['MP4', 'WebM', 'AVI', 'MOV', 'MKV', 'GIF'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Audio */}
+            <Card className="border-border/50 hover:border-pink-300 dark:hover:border-pink-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-900/40 flex items-center justify-center mx-auto mb-3">
+                  <Music className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">Audio</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['MP3', 'WAV', 'OGG', 'FLAC', 'AAC', 'WMA'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Archives */}
+            <Card className="border-border/50 hover:border-yellow-300 dark:hover:border-yellow-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center mx-auto mb-3">
+                  <Archive className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">Archives</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['ZIP', 'TAR', 'GZ', '7Z', 'RAR'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI-Powered */}
+            <Card className="border-border/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:shadow-md">
+              <CardContent className="p-4 text-center">
+                <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mx-auto mb-3">
+                  <Sparkles className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h3 className="font-semibold text-sm mb-2">AI-Powered</h3>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {['Analysis', 'Tags', 'Summary'].map(f => (
+                    <Badge key={f} variant="secondary" className="text-[10px] px-1.5 py-0.5">{f}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* CTA Card */}
+          <div className="max-w-xl mx-auto">
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border-2 border-amber-200 dark:border-amber-800 shadow-lg">
+              <CardContent className="p-8 flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center mb-4">
                   <FileSearch className="h-8 w-8 text-amber-600 dark:text-amber-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Convert Files Now</h3>
                 <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
                   Upload any file and convert it to a different format in seconds.
-                  Free, no sign-up required.
+                  Free, no sign-up required — just drag, drop, and convert.
                 </p>
                 <Link href="/convert" className="w-full">
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2 h-11 text-base">
-                    <RefreshCw className="h-4 w-4" />
+                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2 h-12 text-base font-semibold shadow-md">
+                    <RefreshCw className="h-5 w-5" />
                     Start Converting
                   </Button>
                 </Link>
@@ -372,6 +439,8 @@ export default function HomePage() {
                   <span>No Sign-up</span>
                   <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
                   <span>200+ Formats</span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span>Secure</span>
                 </div>
               </CardContent>
             </Card>
