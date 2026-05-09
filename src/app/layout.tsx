@@ -57,6 +57,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: 'mQdGszJP26YrHsf80_FkPnwesnKrOojAh5WPJF5LIpk',
+  },
   other: {
     'google-adsense-account': 'ca-pub-2436864326098458',
   },
@@ -70,11 +73,30 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Google AdSense */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2436864326098458"
           crossOrigin="anonymous"
           strategy="afterInteractive"
+        />
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-WJK0CNLB4K"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-WJK0CNLB4K');
+            `,
+          }}
         />
       </head>
       <body
