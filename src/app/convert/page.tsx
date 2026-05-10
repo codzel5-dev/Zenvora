@@ -80,6 +80,8 @@ function ConvertPageContent() {
   const [quota, setQuota] = React.useState<{ total: number; used: number; limit: number } | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const pollIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
+  const pollStartTimeRef = React.useRef<number>(0);
+  const pollErrorCountRef = React.useRef<number>(0);
   const [prefilled, setPrefilled] = React.useState(false);
 
   // Fetch quota on mount + handle URL params
@@ -210,12 +212,48 @@ function ConvertPageContent() {
         throw new Error(data.error || 'Conversion failed to start');
       }
 
-      setState(prev => ({ ...prev, jobId: data.jobId }));
+      // Validate that we got a valid job ID from the API
+      if (!data.jobId) {
+        throw new Error('Conversion job was not created properly. No job ID returned from server.');
+      }
 
-      // Start polling for status
+      const jobId = data.jobId;
+      setState(prev => ({ ...prev, jobId }));
+      pollStartTimeRef.current = Date.now();
+      pollErrorCountRef.current = 0;
+
+      // Start polling for status (max 3 minutes, max 5 consecutive errors)
       pollIntervalRef.current = setInterval(async () => {
         try {
-          const statusRes = await fetch(`/api/convert/status/${data.jobId}`);
+          // Timeout after 3 minutes
+          if (Date.now() - pollStartTimeRef.current > 180000) {
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            setState(prev => ({
+              ...prev,
+              step: 'error',
+              error: 'Conversion timed out. Please try again.',
+            }));
+            return;
+          }
+
+          const statusRes = await fetch(`/api/convert/status/${jobId}`);
+
+          if (!statusRes.ok) {
+            pollErrorCountRef.current += 1;
+            if (pollErrorCountRef.current >= 5) {
+              throw new Error('Too many failed status checks. The conversion may have failed.');
+            }
+            // Retry on transient error
+            setState(prev => ({
+              ...prev,
+              percent: Math.min(prev.percent + 3, 90),
+            }));
+            return;
+          }
+
+          // Reset error count on successful poll
+          pollErrorCountRef.current = 0;
+
           const statusData = await statusRes.json();
 
           if (statusData.status === 'finished' && statusData.downloadUrl) {
@@ -240,13 +278,23 @@ function ConvertPageContent() {
               percent: statusData.percent || Math.min(prev.percent + 5, 90),
             }));
           }
-        } catch {
-          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-          setState(prev => ({
-            ...prev,
-            step: 'error',
-            error: 'Failed to check conversion status',
-          }));
+        } catch (pollError) {
+          pollErrorCountRef.current += 1;
+          if (pollErrorCountRef.current >= 5) {
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            setState(prev => ({
+              ...prev,
+              step: 'error',
+              error: pollError instanceof Error ? pollError.message : 'Failed to check conversion status',
+            }));
+          } else {
+            // Continue polling with a warning
+            console.warn('[Convert] Status poll error:', pollError);
+            setState(prev => ({
+              ...prev,
+              percent: Math.min(prev.percent + 3, 90),
+            }));
+          }
         }
       }, 2000);
     } catch (error) {
