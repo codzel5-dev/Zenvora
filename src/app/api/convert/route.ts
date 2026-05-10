@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 import { createConversionJob, getAvailableFormats, CONVERSION_MAP } from '@/lib/services/cloudconvert.service';
 import { getRemainingQuota } from '@/lib/services/cloudconvert-keys';
 
@@ -45,13 +46,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the conversion job
+    // Create the conversion job on CloudConvert (with webhook)
     const result = await createConversionJob(fileUrl, mimeType, outputFormat, fileName);
+
+    // Save job to our database so the webhook can update it later
+    await db.conversionJob.create({
+      data: {
+        jobId: result.jobId,
+        status: 'waiting',
+        percent: 0,
+        inputFileName: fileName,
+        inputMimeType: mimeType,
+        outputFormat,
+        fileUrl,
+        keyLabel: result.keyLabel,
+      },
+    });
+
+    console.log(`[Convert API] Job ${result.jobId} created and saved to DB`);
 
     return NextResponse.json({
       success: true,
       jobId: result.jobId,
-      message: 'Conversion job created. Poll /api/convert/status/[jobId] for progress.',
+      message: 'Conversion job created. CloudConvert will notify our webhook when done.',
     });
   } catch (error) {
     console.error('[Convert API] Error:', error);

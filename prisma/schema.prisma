@@ -48,3 +48,20 @@ model ContactMessage {
   message   String
   createdAt DateTime @default(now())
 }
+
+model ConversionJob {
+  id             String    @id @default(cuid())
+  jobId          String    @unique   // CloudConvert job ID
+  status         String    @default("waiting")  // waiting | processing | finished | error
+  percent        Int       @default(0)
+  inputFileName  String
+  inputMimeType  String
+  outputFormat   String
+  fileUrl        String    @default("")  // Input file URL
+  downloadUrl    String?   // Output download URL (set when finished)
+  outputFilename String?   // Output file name
+  error          String?   // Error message if failed
+  keyLabel       String?   // Which API key was used
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}

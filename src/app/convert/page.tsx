@@ -222,7 +222,9 @@ function ConvertPageContent() {
       pollStartTimeRef.current = Date.now();
       pollErrorCountRef.current = 0;
 
-      // Start polling for status (max 3 minutes, max 5 consecutive errors)
+      // Poll our local DB for status (updated by CloudConvert webhook).
+      // Since this reads from our own database, it's very fast (no CloudConvert API call).
+      // We poll every 1.5s for near-instant feedback.
       pollIntervalRef.current = setInterval(async () => {
         try {
           // Timeout after 3 minutes
@@ -240,14 +242,9 @@ function ConvertPageContent() {
 
           if (!statusRes.ok) {
             pollErrorCountRef.current += 1;
-            if (pollErrorCountRef.current >= 5) {
+            if (pollErrorCountRef.current >= 8) {
               throw new Error('Too many failed status checks. The conversion may have failed.');
             }
-            // Retry on transient error
-            setState(prev => ({
-              ...prev,
-              percent: Math.min(prev.percent + 3, 90),
-            }));
             return;
           }
 
@@ -272,15 +269,23 @@ function ConvertPageContent() {
               step: 'error',
               error: statusData.error || 'Conversion failed',
             }));
-          } else {
+          } else if (statusData.status === 'processing') {
             setState(prev => ({
               ...prev,
-              percent: statusData.percent || Math.min(prev.percent + 5, 90),
+              percent: typeof statusData.percent === 'number' && statusData.percent > 0
+                ? statusData.percent
+                : Math.min(prev.percent + 5, 90),
+            }));
+          } else {
+            // Still waiting — slow progress animation
+            setState(prev => ({
+              ...prev,
+              percent: Math.min(prev.percent + 2, 20),
             }));
           }
         } catch (pollError) {
           pollErrorCountRef.current += 1;
-          if (pollErrorCountRef.current >= 5) {
+          if (pollErrorCountRef.current >= 8) {
             if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
             setState(prev => ({
               ...prev,
@@ -288,15 +293,10 @@ function ConvertPageContent() {
               error: pollError instanceof Error ? pollError.message : 'Failed to check conversion status',
             }));
           } else {
-            // Continue polling with a warning
             console.warn('[Convert] Status poll error:', pollError);
-            setState(prev => ({
-              ...prev,
-              percent: Math.min(prev.percent + 3, 90),
-            }));
           }
         }
-      }, 2000);
+      }, 1500);
     } catch (error) {
       setState(prev => ({
         ...prev,

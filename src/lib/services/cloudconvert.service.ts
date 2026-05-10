@@ -10,6 +10,13 @@
  * ⚠️ CloudConvert API v2 wraps all responses in a `data` object:
  *    { data: { id, status, tasks: [...] } }
  *    We must unwrap this to access the actual job data.
+ * 
+ * 🔄 Webhook flow:
+ *    1. We create a job with `status_url` pointing to our webhook
+ *    2. CloudConvert POSTs status updates to our webhook automatically
+ *    3. Webhook stores the update in DB (ConversionJob table)
+ *    4. Client polls our /api/convert/status endpoint (reads from DB — fast!)
+ *    5. No need to call CloudConvert API for status checks
  */
 
 import {
@@ -18,13 +25,9 @@ import {
   markKeyExhausted,
   disableKey,
   getRemainingQuota,
-  AvailableKeyResult,
 } from './cloudconvert-keys';
 
 const CLOUDCONVERT_API = 'https://api.cloudconvert.com/v2';
-
-// Track which API key was used for each job (for status polling)
-const jobKeyMap: Map<string, AvailableKeyResult> = new Map();
 
 // Supported conversion mappings
 export const CONVERSION_MAP: Record<string, string[]> = {
@@ -117,52 +120,24 @@ function getFormatFromMime(mimeType: string): string {
 }
 
 /**
- * Raw CloudConvert API v2 response wrapper
- * All v2 endpoints return: { data: { ... } }
- */
-interface CloudConvertApiResponse {
-  data: CloudConvertJobData;
-}
-
-interface CloudConvertJobData {
-  id: string;
-  status: string;
-  tasks?: Array<{
-    id: string;
-    name: string;
-    operation: string;
-    status: string;
-    percent?: number;
-    result?: {
-      files?: Array<{
-        filename: string;
-        url: string;
-      }>;
-    };
-    message?: string;
-  }>;
-}
-
-/**
  * Unwrap CloudConvert API v2 response.
  * Handles both wrapped { data: {...} } and unwrapped { id, status, ... } formats
  * for maximum compatibility.
  */
-function unwrapJobData(raw: CloudConvertApiResponse | CloudConvertJobData): CloudConvertJobData {
-  // If it has a `data` property that looks like a job, unwrap it
-  if (raw && typeof raw === 'object' && 'data' in raw && raw.data && typeof raw.data === 'object' && 'id' in raw.data) {
-    return raw.data as CloudConvertJobData;
+function unwrapJobData(raw: Record<string, unknown>): { id?: string; status?: string; tasks?: unknown[] } {
+  if (raw && typeof raw === 'object' && 'data' in raw && raw.data && typeof raw.data === 'object') {
+    return raw.data as { id?: string; status?: string; tasks?: unknown[] };
   }
-  // Already unwrapped (or different format)
-  return raw as CloudConvertJobData;
+  return raw as { id?: string; status?: string; tasks?: unknown[] };
 }
 
 /**
  * Create a CloudConvert conversion job
  * Flow: Import (URL) → Convert → Export (URL)
  * 
- * Uses the key rotation system which automatically picks the next available
- * key (with its OAuth credentials) when the current key is exhausted.
+ * Uses the key rotation system and registers a webhook (status_url)
+ * so CloudConvert pushes status updates to our server instead of us
+ * having to poll their API.
  */
 export async function createConversionJob(
   fileUrl: string,
@@ -180,9 +155,13 @@ export async function createConversionJob(
 
   const inputFormat = getFormatFromMime(inputMimeType);
 
-  // Build the job payload — CloudConvert API v2 expects task properties
-  // at the TOP LEVEL (not wrapped in a "data" object)
+  // Webhook URL for CloudConvert to push status updates
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app';
+  const webhookUrl = `${siteUrl}/api/webhooks/cloudconvert`;
+
+  // Build the job payload with webhook (status_url)
   const jobPayload = {
+    status_url: webhookUrl,
     tasks: {
       'import-url': {
         operation: 'import/url',
@@ -219,7 +198,6 @@ export async function createConversionJob(
       // Handle specific errors with key rotation
       if (response.status === 401) {
         disableKey(keyResult.apiKey);
-        // Retry with next available key
         return createConversionJob(fileUrl, inputMimeType, outputFormat, fileName);
       }
       if (response.status === 422) {
@@ -227,7 +205,6 @@ export async function createConversionJob(
       }
       if (response.status === 429) {
         markKeyExhausted(keyResult.apiKey);
-        // Retry with next available key
         return createConversionJob(fileUrl, inputMimeType, outputFormat, fileName);
       }
 
@@ -239,16 +216,14 @@ export async function createConversionJob(
 
     if (!jobData.id) {
       console.error('[CloudConvert] Unexpected response (no job ID):', JSON.stringify(raw).substring(0, 500));
-      throw new Error('CloudConvert did not return a valid job ID. Response: ' + JSON.stringify(raw).substring(0, 200));
+      throw new Error('CloudConvert did not return a valid job ID.');
     }
 
     // Record successful usage on this key
     recordKeyUsage(keyResult.apiKey);
 
-    // Store which key was used for this job (needed for status polling)
-    jobKeyMap.set(jobData.id, keyResult);
-
     console.log(`[CloudConvert] Job created: ${jobData.id} using ${keyResult.label} (converting ${inputFormat} → ${outputFormat})`);
+    console.log(`[CloudConvert] Webhook registered: ${webhookUrl}`);
 
     return {
       jobId: jobData.id,
@@ -261,141 +236,4 @@ export async function createConversionJob(
     console.error('[CloudConvert] Error creating job:', error);
     throw new Error(`Failed to create conversion job: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
-}
-
-/**
- * Get the status of a CloudConvert job
- * Uses the same API key that was used to create the job
- */
-export async function getJobStatus(jobId: string): Promise<{
-  status: 'waiting' | 'processing' | 'finished' | 'error';
-  percent?: number;
-  downloadUrl?: string;
-  outputFilename?: string;
-  error?: string;
-}> {
-  // Validate jobId before making the API call
-  if (!jobId || jobId === 'undefined' || jobId === 'null') {
-    return {
-      status: 'error',
-      error: 'Invalid job ID. The conversion job was not created properly.',
-    };
-  }
-
-  // Try to use the same key that created this job
-  let keyResult = jobKeyMap.get(jobId) || null;
-
-  // Fallback: if we don't know which key created this job, get any available one
-  if (!keyResult) {
-    keyResult = getAvailableKey();
-  }
-
-  if (!keyResult) {
-    throw new Error('No available CloudConvert API keys to check job status');
-  }
-
-  try {
-    const response = await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${keyResult.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => 'Unknown error');
-      throw new Error(`Failed to get job status: ${response.status} - ${errorText}`);
-    }
-
-    const raw = await response.json();
-    const jobData = unwrapJobData(raw);
-
-    // Map CloudConvert status to our status
-    const statusMap: Record<string, 'waiting' | 'processing' | 'finished' | 'error'> = {
-      'waiting': 'waiting',
-      'processing': 'processing',
-      'finished': 'finished',
-      'error': 'error',
-    };
-
-    const status = statusMap[jobData.status] || 'waiting';
-
-    // Extract download URL and progress from tasks
-    let downloadUrl: string | undefined;
-    let outputFilename: string | undefined;
-    let percent: number | undefined;
-
-    if (jobData.tasks) {
-      for (const task of jobData.tasks) {
-        // Get progress from convert task
-        if (task.operation === 'convert') {
-          if (task.status === 'processing' && task.percent) {
-            percent = task.percent;
-          } else if (task.status === 'finished') {
-            percent = 90; // Convert done, waiting for export
-          }
-        }
-
-        // Get download URL from export task
-        if (task.operation === 'export/url' && task.result?.files?.[0]) {
-          downloadUrl = task.result.files[0].url;
-          outputFilename = task.result.files[0].filename;
-          percent = 100; // Export URL available = fully done
-        }
-
-        // Check for errors in any task
-        if (task.status === 'error') {
-          return {
-            status: 'error',
-            error: `Task "${task.name}" failed: ${task.message || 'The input format may not be supported for this conversion type.'}`,
-          };
-        }
-      }
-    }
-
-    return {
-      status,
-      percent,
-      downloadUrl,
-      outputFilename,
-    };
-  } catch (error) {
-    console.error('[CloudConvert] Error getting job status:', error);
-    throw new Error(`Failed to get job status: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
-/**
- * Wait for a CloudConvert job to complete (with polling)
- */
-export async function waitForJob(
-  jobId: string,
-  maxWaitMs: number = 120000,
-  pollIntervalMs: number = 2000
-): Promise<{
-  downloadUrl: string;
-  outputFilename: string;
-}> {
-  const startTime = Date.now();
-
-  while (Date.now() - startTime < maxWaitMs) {
-    const status = await getJobStatus(jobId);
-
-    if (status.status === 'finished' && status.downloadUrl) {
-      return {
-        downloadUrl: status.downloadUrl,
-        outputFilename: status.outputFilename || 'converted-file',
-      };
-    }
-
-    if (status.status === 'error') {
-      throw new Error(status.error || 'Conversion failed');
-    }
-
-    // Wait before next poll
-    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
-  }
-
-  throw new Error('Conversion timed out. The file may be too large or the server is busy. Please try again.');
 }
