@@ -5,30 +5,60 @@ import { db } from '@/lib/db';
  * POST /api/webhooks/cloudconvert
  * 
  * CloudConvert webhook callback — called automatically when a job's
- * status changes (processing → finished / error).
+ * status changes (job.created, job.finished, job.failed).
  * 
- * CloudConvert sends a POST with the full job object wrapped in { data: {...} }
- * including all tasks with their results (download URLs, errors, etc.)
+ * Per CloudConvert docs: https://cloudconvert.com/docs/api-reference/webhooks
  * 
- * We update our ConversionJob record in the database so the client
- * can read the latest status without polling CloudConvert's API.
+ * The webhook payload format is:
+ * {
+ *   "event": "job.finished" | "job.created" | "job.failed",
+ *   "job": {
+ *     "id": "...",
+ *     "tag": "...",
+ *     "status": "...",
+ *     "created_at": "...",
+ *     "started_at": "...",
+ *     "ended_at": "...",
+ *     "tasks": [
+ *       {
+ *         "id": "...",
+ *         "name": "...",
+ *         "operation": "import/url" | "convert" | "export/url",
+ *         "status": "waiting" | "processing" | "finished" | "error",
+ *         "message": null | "...",
+ *         "percent": 0-100,
+ *         "result": {
+ *           "files": [{ "filename": "...", "url": "..." }]
+ *         }
+ *       }
+ *     ]
+ *   }
+ * }
+ * 
+ * Headers:
+ *   Content-Type: application/json
+ *   CloudConvert-Signature: <HMAC-SHA256 signature>
  */
 export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.json();
 
-    // CloudConvert API v2 wraps the response in { data: {...} }
-    const jobData = rawBody?.data || rawBody;
+    // Log the raw payload for debugging
+    console.log('[Webhook] Received payload:', JSON.stringify(rawBody).substring(0, 500));
 
-    const cloudconvertJobId = jobData?.id;
-    const jobStatus = jobData?.status;
+    // CloudConvert webhook payload has "event" and "job" at top level
+    const event = rawBody?.event;
+    const job = rawBody?.job;
 
-    if (!cloudconvertJobId || !jobStatus) {
-      console.warn('[Webhook] Invalid payload — missing job ID or status');
-      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+    if (!job?.id) {
+      console.warn('[Webhook] Invalid payload — missing job.id');
+      return NextResponse.json({ error: 'Invalid payload: missing job.id' }, { status: 400 });
     }
 
-    console.log(`[Webhook] CloudConvert job ${cloudconvertJobId} → ${jobStatus}`);
+    const cloudconvertJobId = job.id;
+    const jobStatus = job.status;
+
+    console.log(`[Webhook] Event: ${event}, Job: ${cloudconvertJobId}, Status: ${jobStatus}`);
 
     // Find the matching ConversionJob in our database
     const conversionJob = await db.conversionJob.findUnique({
@@ -47,8 +77,8 @@ export async function POST(request: NextRequest) {
     let percent = conversionJob.percent;
     let errorMessage: string | null = null;
 
-    if (jobData.tasks && Array.isArray(jobData.tasks)) {
-      for (const task of jobData.tasks) {
+    if (job.tasks && Array.isArray(job.tasks)) {
+      for (const task of job.tasks) {
         // Extract progress from convert task
         if (task.operation === 'convert') {
           if (task.status === 'processing' && typeof task.percent === 'number') {
@@ -76,14 +106,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Map CloudConvert status to our internal status
+    // Determine our internal status based on the event and job status
     let newStatus = conversionJob.status;
-    if (jobStatus === 'finished' && downloadUrl) {
-      newStatus = 'finished';
-    } else if (jobStatus === 'error' || errorMessage) {
+
+    if (event === 'job.failed') {
       newStatus = 'error';
-    } else if (jobStatus === 'processing') {
-      newStatus = 'processing';
+      if (!errorMessage) {
+        errorMessage = 'CloudConvert reported job.failed event';
+      }
+    } else if (event === 'job.finished') {
+      if (downloadUrl) {
+        newStatus = 'finished';
+      } else {
+        // Job finished but no download URL yet — might need to check tasks
+        newStatus = 'finished';
+        percent = 100;
+      }
+    } else if (event === 'job.created') {
+      newStatus = 'waiting';
+    } else {
+      // Fallback: use job.status
+      if (jobStatus === 'finished') {
+        newStatus = 'finished';
+      } else if (jobStatus === 'error') {
+        newStatus = 'error';
+      } else if (jobStatus === 'processing') {
+        newStatus = 'processing';
+      }
+    }
+
+    // Override to error if any task error was found
+    if (errorMessage && newStatus !== 'finished') {
+      newStatus = 'error';
     }
 
     // Update the database record
@@ -99,13 +153,13 @@ export async function POST(request: NextRequest) {
     });
 
     console.log(
-      `[Webhook] Updated job ${cloudconvertJobId}: status=${newStatus}, percent=${percent}` +
-      (downloadUrl ? `, downloadUrl=${downloadUrl.substring(0, 80)}...` : '') +
+      `[Webhook] Updated job ${cloudconvertJobId}: event=${event}, status=${newStatus}, percent=${percent}` +
+      (downloadUrl ? `, downloadUrl=✓` : '') +
       (errorMessage ? `, error=${errorMessage}` : '')
     );
 
     // Always return 200 to acknowledge receipt (prevents CloudConvert retries)
-    return NextResponse.json({ received: true, status: newStatus });
+    return NextResponse.json({ received: true, event, status: newStatus });
   } catch (error) {
     console.error('[Webhook] Error processing CloudConvert webhook:', error);
     // Return 500 so CloudConvert retries the webhook

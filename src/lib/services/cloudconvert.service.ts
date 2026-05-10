@@ -155,13 +155,14 @@ export async function createConversionJob(
 
   const inputFormat = getFormatFromMime(inputMimeType);
 
-  // Webhook URL for CloudConvert to push status updates
+  // Build the job payload with dynamic webhook (webhook_url)
+  // Per CloudConvert docs: "When creating a job, you can set a webhook_url parameter.
+  // This results in webhook notifications to the specified URL for the single job only."
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app';
   const webhookUrl = `${siteUrl}/api/webhooks/cloudconvert`;
 
-  // Build the job payload with webhook (status_url)
   const jobPayload = {
-    status_url: webhookUrl,
+    webhook_url: webhookUrl,
     tasks: {
       'import-url': {
         operation: 'import/url',
