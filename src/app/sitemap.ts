@@ -1,10 +1,13 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/lib/db';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app';
+const BASE_URL = 'https://zenvoora.vercel.app';
+
+// Revalidate every 1 hour
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages
+  // Static pages - always available
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -68,13 +71,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic blog pages
+  // Dynamic blog pages - with timeout protection
   try {
-    const blogPosts = await db.blogPost.findMany({
-      where: { published: true },
-      select: { slug: true, updatedAt: true },
-      orderBy: { createdAt: 'desc' },
-    });
+    const blogPosts = await Promise.race([
+      db.blogPost.findMany({
+        where: { published: true },
+        select: { slug: true, updatedAt: true },
+        orderBy: { createdAt: 'desc' },
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('DB timeout')), 5000)
+      ),
+    ]);
 
     const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
       url: `${BASE_URL}/blog/${post.slug}`,
@@ -85,16 +93,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     staticPages.push(...blogPages);
   } catch {
-    // If DB is unavailable, just skip dynamic pages
+    // If DB is unavailable or timeout, just skip dynamic pages
   }
 
-  // Dynamic file pages
+  // Dynamic file pages - with timeout protection
   try {
-    const files = await db.uploadedFile.findMany({
-      select: { id: true, createdAt: true },
-      orderBy: { createdAt: 'desc' },
-      take: 500, // Limit to most recent 500 files
-    });
+    const files = await Promise.race([
+      db.uploadedFile.findMany({
+        select: { id: true, createdAt: true },
+        orderBy: { createdAt: 'desc' },
+        take: 500,
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('DB timeout')), 5000)
+      ),
+    ]);
 
     const filePages: MetadataRoute.Sitemap = files.map((file) => ({
       url: `${BASE_URL}/file/${file.id}`,
@@ -105,7 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     staticPages.push(...filePages);
   } catch {
-    // If DB is unavailable, just skip dynamic pages
+    // If DB is unavailable or timeout, just skip dynamic pages
   }
 
   return staticPages;
