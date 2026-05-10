@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           <p>
             Zenvoora (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your
-            information when you use our file upload and sharing service at zenvoora.netlify.app
+            information when you use our file upload and sharing service at zenvoora.com
             (the &quot;Service&quot;). By using the Service, you agree to the collection and use of
             information in accordance with this policy.
           </p>
@@ -212,7 +212,7 @@ export default function PrivacyPage() {
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
             <li>Email: privacy@zenvoora.com</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.netlify.app/contact</a></li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.com/contact</a></li>
           </ul>
         </section>
       </div>

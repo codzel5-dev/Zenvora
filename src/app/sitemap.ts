@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/lib/db';
 
-const BASE_URL = 'https://zenvoora.netlify.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages

@@ -4,7 +4,7 @@ Disallow: /api/
 Disallow: /_next/
 
 # Sitemaps
-Sitemap: https://zenvoora.netlify.app/sitemap.xml
+Sitemap: https://zenvoora.vercel.app/sitemap.xml
 
 # Crawl-delay (respectful crawling)
 Crawl-delay: 1

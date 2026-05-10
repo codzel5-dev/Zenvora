@@ -229,7 +229,7 @@ export default function TermsPage() {
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
             <li>Email: legal@zenvoora.com</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.netlify.app/contact</a></li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.com/contact</a></li>
           </ul>
         </section>
       </div>

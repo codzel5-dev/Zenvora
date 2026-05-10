@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: FilePageProps): Promise<Metad
       description,
       type: 'article',
       ...(isImage ? { images: [{ url: file.thumbnailUrl || file.fileUrl, alt: title }] } : {}),
-      url: `https://zenvoora.netlify.app/file/${id}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app'}/file/${id}`,
       siteName: 'Zenvoora',
     },
     twitter: {

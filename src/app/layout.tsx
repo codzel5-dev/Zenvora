@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting with no registration required.',
-    url: 'https://zenvoora.netlify.app',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app',
     siteName: 'Zenvoora',
     type: 'website',
   },
