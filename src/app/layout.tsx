@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   verification: {
-    google: 'mQdGszJP26YrHsf80_FkPnwesnKrOojAh5WPJF5LIpk',
+    google: 'dt1xckxX1HsglwrL2XK6lWxf89yE9i6ruM8csqnCp38',
   },
   other: {
     'google-adsense-account': 'ca-pub-2436864326098458',
@@ -73,8 +73,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google Search Console - additional verification meta tag */}
-        <meta name="google-site-verification" content="mcDyFLrBwaej0OyrH-U_bkuG1ObUVfQSe_3h0qTlilI" />
+        {/* Google Search Console verification - also set via metadata.verification */}
         {/* Google AdSense */}
         <Script
           async
