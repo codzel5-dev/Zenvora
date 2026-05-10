@@ -74,13 +74,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google Search Console verification - also set via metadata.verification */}
-        {/* Google AdSense */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2436864326098458"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        {/* Google AdSense - Site Verification & Ads */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2436864326098458" crossOrigin="anonymous"></script>
         {/* Google Analytics (gtag.js) */}
         <Script
           async
