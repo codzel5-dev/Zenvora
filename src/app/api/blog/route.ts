@@ -7,6 +7,7 @@ const blogPostSchema = z.object({
   slug: z.string().min(3, 'Slug must be at least 3 characters').max(200, 'Slug is too long').regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens'),
   content: z.string().min(50, 'Content must be at least 50 characters'),
   excerpt: z.string().min(10, 'Excerpt must be at least 10 characters').max(500, 'Excerpt is too long'),
+  imageUrl: z.string().url('Invalid image URL').optional().or(z.literal('')),
   published: z.boolean().default(false),
 });
 
@@ -86,7 +87,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, slug, content, excerpt, published } = result.data;
+    const { title, slug, content, excerpt, imageUrl, published } = result.data;
 
     // Check if slug already exists
     const existing = await db.blogPost.findUnique({ where: { slug } });
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
     }
 
     const post = await db.blogPost.create({
-      data: { title, slug, content, excerpt, published },
+      data: { title, slug, content, excerpt, imageUrl: imageUrl || '', published },
     });
 
     return NextResponse.json(

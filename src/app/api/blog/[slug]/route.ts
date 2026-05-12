@@ -6,7 +6,9 @@ const blogPostUpdateSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(200, 'Title is too long').optional(),
   content: z.string().min(50, 'Content must be at least 50 characters').optional(),
   excerpt: z.string().min(10, 'Excerpt must be at least 10 characters').max(500, 'Excerpt is too long').optional(),
+  imageUrl: z.string().optional(),
   published: z.boolean().optional(),
+  createdAt: z.string().optional(),
 });
 
 export async function GET(
@@ -65,9 +67,14 @@ export async function PUT(
       );
     }
 
+    const { createdAt, ...updateData } = result.data;
+    if (createdAt) {
+      (updateData as Record<string, unknown>).createdAt = new Date(createdAt);
+    }
+
     const post = await db.blogPost.update({
       where: { slug },
-      data: result.data,
+      data: updateData,
     });
 
     return NextResponse.json({

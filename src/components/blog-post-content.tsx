@@ -91,6 +91,105 @@ export function BlogPostContent() {
     }
   };
 
+  const renderContent = (content: string) => {
+    const lines = content.split('\n');
+    const elements: React.ReactNode[] = [];
+    let listItems: string[] = [];
+    let inList = false;
+
+    const flushList = () => {
+      if (listItems.length > 0) {
+        elements.push(
+          <ul key={`list-${elements.length}`} className="list-disc pl-6 space-y-1 mb-4 text-muted-foreground">
+            {listItems.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+        inList = false;
+      }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Empty line
+      if (!line.trim()) {
+        flushList();
+        continue;
+      }
+
+      // Image syntax: ![alt](url)
+      if (line.trim().startsWith('![') && line.trim().includes '](')) {
+        flushList();
+        const match = line.trim().match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (match) {
+          elements.push(
+            <figure key={`img-${i}`} className="my-8">
+              <div className="relative w-full rounded-xl overflow-hidden bg-muted">
+                <Image
+                  src={match[2]}
+                  alt={match[1]}
+                  width={800}
+                  height={450}
+                  className="w-full h-auto object-cover"
+                  sizes="(max-width: 768px) 100vw, 768px"
+                />
+              </div>
+              {match[1] && (
+                <figcaption className="text-center text-sm text-muted-foreground mt-2">
+                  {match[1]}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        continue;
+      }
+
+      // H2
+      if (line.startsWith('## ')) {
+        flushList();
+        elements.push(
+          <h2 key={`h2-${i}`} className="text-xl font-semibold mt-8 mb-4 text-foreground">
+            {line.replace('## ', '')}
+          </h2>
+        );
+        continue;
+      }
+
+      // H3
+      if (line.startsWith('### ')) {
+        flushList();
+        elements.push(
+          <h3 key={`h3-${i}`} className="text-lg font-semibold mt-6 mb-3 text-foreground">
+            {line.replace('### ', '')}
+          </h3>
+        );
+        continue;
+      }
+
+      // List item
+      if (line.startsWith('- ')) {
+        inList = true;
+        listItems.push(line.replace('- ', ''));
+        continue;
+      }
+
+      // Regular paragraph
+      flushList();
+      elements.push(
+        <p key={`p-${i}`} className="text-muted-foreground leading-relaxed mb-4">
+          {line}
+        </p>
+      );
+    }
+
+    flushList();
+    return elements;
+  };
+
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -190,19 +289,7 @@ export function BlogPostContent() {
 
       {/* Article content */}
       <div className="prose prose-neutral dark:prose-invert max-w-none">
-        {post.content.split('\n').map((paragraph, index) => {
-          if (!paragraph.trim()) return <br key={index} />;
-          if (paragraph.startsWith('## ')) {
-            return <h2 key={index} className="text-xl font-semibold mt-8 mb-4 text-foreground">{paragraph.replace('## ', '')}</h2>;
-          }
-          if (paragraph.startsWith('### ')) {
-            return <h3 key={index} className="text-lg font-semibold mt-6 mb-3 text-foreground">{paragraph.replace('### ', '')}</h3>;
-          }
-          if (paragraph.startsWith('- ')) {
-            return <li key={index} className="text-muted-foreground ml-6">{paragraph.replace('- ', '')}</li>;
-          }
-          return <p key={index} className="text-muted-foreground leading-relaxed mb-4">{paragraph}</p>;
-        })}
+        {renderContent(post.content)}
       </div>
 
       {/* Share */}
