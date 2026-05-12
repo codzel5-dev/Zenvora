@@ -121,7 +121,7 @@ export function BlogPostContent() {
       }
 
       // Image syntax: ![alt](url)
-      if (line.trim().startsWith('![') && line.trim().includes '](')) {
+      if (line.trim().startsWith('![') && line.trim().includes('](')) {
         flushList();
         const match = line.trim().match(/^!\[(.*?)\]\((.*?)\)$/);
         if (match) {
