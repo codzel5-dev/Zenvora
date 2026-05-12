@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Sparkles, Brain, FileSearch } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles, Brain, FileSearch, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FilePreview } from '@/components/file/file-preview';
@@ -35,15 +35,48 @@ export function FilePreviewClient({ file }: FilePreviewClientProps) {
   const [relatedFiles, setRelatedFiles] = React.useState<FileData[]>([]);
   const [loadingRelated, setLoadingRelated] = React.useState(true);
   const [aiAnalyzed, setAiAnalyzed] = React.useState(!!file.aiSummary);
+  const [autoAnalyzing, setAutoAnalyzing] = React.useState(false);
 
   React.useEffect(() => {
     fetchRelatedFiles();
   }, [file.id, file.category, file.mimeType]);
 
-  // Listen for AI analysis completion from FileInfo
+  // Auto-trigger AI analysis if not yet analyzed
   React.useEffect(() => {
+    if (file.aiSummary) return; // Already has AI data
+
+    const autoAnalyze = async () => {
+      setAutoAnalyzing(true);
+      try {
+        const response = await fetch('/api/ai/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileId: file.id,
+            fileUrl: file.fileUrl,
+            mimeType: file.mimeType,
+          }),
+        });
+
+        if (response.ok) {
+          setAiAnalyzed(true);
+        }
+      } catch {
+        // Auto-analysis failed - user can still click "Analyze with AI" button
+      } finally {
+        setAutoAnalyzing(false);
+      }
+    };
+
+    // Small delay to let the page render first
+    const timer = setTimeout(autoAnalyze, 1500);
+    return () => clearTimeout(timer);
+  }, [file.id, file.fileUrl, file.mimeType, file.aiSummary]);
+
+  // Listen for AI analysis completion from FileInfo (for manual re-analyze)
+  React.useEffect(() => {
+    if (aiAnalyzed) return;
     const interval = setInterval(async () => {
-      if (aiAnalyzed) return;
       try {
         const res = await fetch(`/api/files/${file.id}`);
         if (res.ok) {
@@ -96,6 +129,11 @@ export function FilePreviewClient({ file }: FilePreviewClientProps) {
             <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 gap-1.5">
               <Brain className="h-3 w-3" />
               AI Analyzed
+            </Badge>
+          ) : autoAnalyzing ? (
+            <Badge variant="outline" className="gap-1.5 text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-700">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Analyzing...
             </Badge>
           ) : (
             <Badge variant="outline" className="gap-1.5 text-purple-600 dark:text-purple-400 border-purple-300 dark:border-purple-700">
