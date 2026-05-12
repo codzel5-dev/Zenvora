@@ -56,6 +56,29 @@ export async function GET(request: NextRequest) {
     const tableNames = allTables.rows.map(r => r.name as string);
     results.push(`All tables: ${tableNames.join(', ')}`);
 
+    // Update blog post dates and images
+    try {
+      await client.execute({
+        sql: `UPDATE BlogPost SET imageUrl = ?, createdAt = '2026-05-07 10:00:00', updatedAt = '2026-05-07 10:00:00' WHERE slug = ?`,
+        args: ['https://zenvoora.vercel.app/blog/file-conversion-hero.png', 'essential-file-conversion-tools-professionals-2026'],
+      });
+      results.push('Updated: file-conversion article (May 7, 2026)');
+
+      await client.execute({
+        sql: `UPDATE BlogPost SET imageUrl = ?, createdAt = '2026-05-06 10:00:00', updatedAt = '2026-05-06 10:00:00' WHERE slug = ?`,
+        args: ['https://zenvoora.vercel.app/blog/cloud-security-hero.png', 'cloud-storage-security-complete-guide-protecting-files-online'],
+      });
+      results.push('Updated: cloud-security article (May 6, 2026)');
+
+      await client.execute({
+        sql: `UPDATE BlogPost SET imageUrl = ?, createdAt = '2026-05-05 10:00:00', updatedAt = '2026-05-05 10:00:00' WHERE slug = ?`,
+        args: ['https://zenvoora.vercel.app/blog/free-file-sharing-hero.png', 'ultimate-guide-free-file-sharing-upload-convert-share'],
+      });
+      results.push('Updated: free-file-sharing article (May 5, 2026)');
+    } catch (e) {
+      results.push(`Blog update error: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Database setup complete',
