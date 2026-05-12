@@ -148,6 +148,19 @@ function ConvertPageContent() {
 
       const uploadData = await uploadRes.json();
 
+      // Debug: log upload response to verify fileUrl
+      console.log('[Convert Page] Upload response:', {
+        fileUrl: uploadData.fileUrl,
+        id: uploadData.id,
+        mimeType: uploadData.mimeType,
+      });
+
+      const resolvedFileUrl = uploadData.fileUrl || uploadData.file?.url || uploadData.url || '';
+
+      if (!resolvedFileUrl) {
+        throw new Error('Upload succeeded but file URL was not returned. Please try again.');
+      }
+
       // Get available formats for this MIME type
       const formatsRes = await fetch(`/api/convert?mimeType=${encodeURIComponent(file.type)}`);
       const formatsData = await formatsRes.json();
@@ -155,7 +168,7 @@ function ConvertPageContent() {
       setState(prev => ({
         ...prev,
         step: 'select',
-        fileUrl: uploadData.file?.url || uploadData.url || '',
+        fileUrl: resolvedFileUrl,
         fileName: file.name,
         fileSize: file.size,
         mimeType: file.type,
@@ -190,7 +203,16 @@ function ConvertPageContent() {
 
   // Start conversion
   const startConversion = async () => {
-    if (!state.fileUrl || !state.outputFormat) return;
+    if (!state.fileUrl || !state.outputFormat) {
+      setState(prev => ({
+        ...prev,
+        step: 'error',
+        error: !state.fileUrl
+          ? 'File URL is missing. Please re-upload the file and try again.'
+          : 'Please select an output format first.',
+      }));
+      return;
+    }
 
     setState(prev => ({ ...prev, step: 'converting', percent: 0, error: null }));
 

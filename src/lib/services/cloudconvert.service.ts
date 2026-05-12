@@ -11,12 +11,12 @@
  *    { data: { id, status, tasks: [...] } }
  *    We must unwrap this to access the actual job data.
  * 
- * 🔄 Webhook flow:
+ * 🔄 Webhook + Fallback flow:
  *    1. We create a job with `status_url` pointing to our webhook
  *    2. CloudConvert POSTs status updates to our webhook automatically
  *    3. Webhook stores the update in DB (ConversionJob table)
  *    4. Client polls our /api/convert/status endpoint (reads from DB — fast!)
- *    5. No need to call CloudConvert API for status checks
+ *    5. If webhook hasn't updated DB in 10+ seconds, fallback: poll CloudConvert API directly
  */
 
 import {
@@ -26,6 +26,7 @@ import {
   disableKey,
   getRemainingQuota,
 } from './cloudconvert-keys';
+import { CLOUDCONVERT_KEYS } from '@/config/cloudconvert-keys';
 
 const CLOUDCONVERT_API = 'https://api.cloudconvert.com/v2';
 
@@ -237,4 +238,106 @@ export async function createConversionJob(
     console.error('[CloudConvert] Error creating job:', error);
     throw new Error(`Failed to create conversion job: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
+}
+
+/**
+ * Fetch job status directly from CloudConvert API (fallback when webhook fails)
+ * 
+ * Tries each configured API key until one works.
+ * Returns parsed job data with tasks, or null on failure.
+ */
+export async function getJobStatusFromCloudConvert(jobId: string): Promise<{
+  status: string;
+  percent: number;
+  downloadUrl: string | null;
+  outputFilename: string | null;
+  error: string | null;
+} | null> {
+  // Try each configured key
+  for (const key of CLOUDCONVERT_KEYS) {
+    try {
+      const response = await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
+        headers: {
+          'Authorization': `Bearer ${key.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 401) {
+        // This key doesn't work for this job, try next
+        continue;
+      }
+
+      if (!response.ok) {
+        console.warn(`[CloudConvert Fallback] Status check failed: ${response.status}`);
+        continue;
+      }
+
+      const raw = await response.json();
+      const jobData = unwrapJobData(raw as Record<string, unknown>);
+
+      if (!jobData || !jobData.id) {
+        continue;
+      }
+
+      // Parse the job status
+      let downloadUrl: string | null = null;
+      let outputFilename: string | null = null;
+      let percent = 0;
+      let errorMessage: string | null = null;
+
+      if (jobData.tasks && Array.isArray(jobData.tasks)) {
+        for (const task of jobData.tasks as Array<Record<string, unknown>>) {
+          // Extract progress from convert task
+          if (task.operation === 'convert') {
+            if (task.status === 'processing' && typeof task.percent === 'number') {
+              percent = Math.min(task.percent as number, 95);
+            } else if (task.status === 'finished') {
+              percent = 95;
+            } else if (task.status === 'error') {
+              errorMessage = (task.message as string) || 'Conversion task failed';
+            }
+          }
+
+          // Extract download URL from export task
+          if (task.operation === 'export/url' && task.status === 'finished') {
+            const result = task.result as Record<string, unknown> | undefined;
+            const files = result?.files as Array<Record<string, string>> | undefined;
+            if (files && files[0]) {
+              downloadUrl = files[0].url;
+              outputFilename = files[0].filename;
+              percent = 100;
+            }
+          }
+
+          // Check for import errors
+          if (task.operation === 'import/url' && task.status === 'error') {
+            errorMessage = (task.message as string) || 'Failed to import the file. The URL may be inaccessible.';
+          }
+        }
+      }
+
+      // Determine status
+      let status = 'waiting';
+      if (jobData.status === 'finished') {
+        status = 'finished';
+        if (!downloadUrl) percent = 100;
+      } else if (jobData.status === 'error' || jobData.status === 'failed') {
+        status = 'error';
+        if (!errorMessage) errorMessage = 'CloudConvert reported job failure';
+      } else if (jobData.status === 'processing') {
+        status = 'processing';
+      }
+
+      console.log(`[CloudConvert Fallback] Job ${jobId}: status=${status}, percent=${percent}${downloadUrl ? ', downloadUrl=✓' : ''}${errorMessage ? `, error=${errorMessage}` : ''}`);
+
+      return { status, percent, downloadUrl, outputFilename, error: errorMessage };
+    } catch (err) {
+      console.warn(`[CloudConvert Fallback] Error checking job with key ${key.label}:`, err);
+      continue;
+    }
+  }
+
+  console.warn(`[CloudConvert Fallback] Could not check job ${jobId} — no valid API key`);
+  return null;
 }
