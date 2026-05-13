@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from 'sonner';
+import { CookieConsent } from '@/components/cookie-consent';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -73,9 +74,31 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google Search Console verification - also set via metadata.verification */}
-        {/* Google AdSense - Site Verification & Ads */}
+        {/* Google Consent Mode v2 - must be loaded BEFORE gtag.js and AdSense */}
+        <Script
+          id="google-consent-mode"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted',
+                'wait_for_update': 500
+              });
+            `,
+          }}
+        />
+
+        {/* Google AdSense */}
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2436864326098458" crossOrigin="anonymous"></script>
+
         {/* Google Analytics (gtag.js) */}
         <Script
           async
@@ -115,6 +138,7 @@ export default function RootLayout({
               className: 'bg-background text-foreground border-border',
             }}
           />
+          <CookieConsent />
         </ThemeProvider>
       </body>
     </html>
