@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BookOpen, Download, ArrowRight, Star, FileText, Clock, Eye } from 'lucide-react';
+import { BookOpen, Upload, ArrowRight, Star, FileText } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,8 +23,6 @@ const ebooks = [
     image: '/resources/ebooks/cloud-storage-guide.png',
     tags: ['Cloud', 'Storage', 'AWS', 'Data Management'],
     pages: 186,
-    downloads: '23.5K',
-    rating: 4.8,
     level: 'Intermediate',
   },
   {
@@ -33,8 +31,6 @@ const ebooks = [
     image: '/resources/ebooks/ai-beginners.png',
     tags: ['AI', 'Machine Learning', 'Neural Networks', 'Beginner'],
     pages: 224,
-    downloads: '31.2K',
-    rating: 4.9,
     level: 'Beginner',
   },
   {
@@ -43,8 +39,6 @@ const ebooks = [
     image: '/resources/ebooks/digital-marketing.png',
     tags: ['Marketing', 'SEO', 'Social Media', 'Analytics'],
     pages: 312,
-    downloads: '18.7K',
-    rating: 4.7,
     level: 'Intermediate',
   },
   {
@@ -53,8 +47,6 @@ const ebooks = [
     image: '/resources/ebooks/cybersecurity.png',
     tags: ['Security', 'Privacy', 'Encryption', 'Hacking'],
     pages: 198,
-    downloads: '14.3K',
-    rating: 4.6,
     level: 'Beginner',
   },
   {
@@ -63,19 +55,8 @@ const ebooks = [
     image: '/resources/ebooks/remote-productivity.png',
     tags: ['Productivity', 'Remote Work', 'Time Management', 'Self-Help'],
     pages: 156,
-    downloads: '20.1K',
-    rating: 4.8,
     level: 'Beginner',
   },
-];
-
-const categories = [
-  { name: 'All E-Books', active: true },
-  { name: 'Technology', active: false },
-  { name: 'Business', active: false },
-  { name: 'Marketing', active: false },
-  { name: 'Security', active: false },
-  { name: 'Self-Help', active: false },
 ];
 
 function getLevelColor(level: string) {
@@ -100,11 +81,11 @@ export default function EbooksPage() {
             </div>
           </div>
           <p className="text-muted-foreground max-w-2xl mt-3 leading-relaxed">
-            Explore our curated collection of free e-books and digital publications. From technology guides and business strategy to productivity and security — download and read instantly, no registration required.
+            Explore our curated collection of free e-books and digital publications. From technology guides and business strategy to productivity and security — browse, upload, and share PDFs instantly.
           </p>
           <div className="flex items-center gap-4 mt-6">
             <Badge variant="secondary" className="text-sm px-3 py-1">{ebooks.length} E-Books</Badge>
-            <Badge variant="secondary" className="text-sm px-3 py-1">Free Downloads</Badge>
+            <Badge variant="secondary" className="text-sm px-3 py-1">Free to Access</Badge>
             <Badge variant="secondary" className="text-sm px-3 py-1">PDF Format</Badge>
           </div>
         </div>
@@ -115,26 +96,8 @@ export default function EbooksPage() {
         <AdBanner />
       </div>
 
-      {/* Category Filter */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              className={`px-4 py-2 text-sm rounded-full border transition-colors ${
-                cat.active
-                  ? 'bg-red-600 text-white border-red-600'
-                  : 'bg-background border-border hover:border-red-300 dark:hover:border-red-700 text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* E-Books Grid */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {ebooks.map((ebook) => (
             <Card key={ebook.title} className="group overflow-hidden hover:shadow-xl hover:border-red-300 dark:hover:border-red-700 transition-all duration-300">
@@ -154,21 +117,10 @@ export default function EbooksPage() {
                     {ebook.level}
                   </Badge>
                 </div>
-                {/* Rating */}
-                <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  {ebook.rating}
-                </div>
-                {/* Bottom info */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-white text-xs">
-                    <FileText className="h-3 w-3" />
-                    {ebook.pages} pages
-                  </div>
-                  <div className="flex items-center gap-1 text-white text-xs">
-                    <Download className="h-3 w-3" />
-                    {ebook.downloads}
-                  </div>
+                {/* Page count */}
+                <div className="absolute bottom-3 left-3 flex items-center gap-1 text-white text-xs">
+                  <FileText className="h-3 w-3" />
+                  {ebook.pages} pages
                 </div>
               </div>
 
@@ -186,10 +138,12 @@ export default function EbooksPage() {
                     </Badge>
                   ))}
                 </div>
-                <Button className="w-full bg-red-600 hover:bg-red-700 text-white gap-2" size="sm">
-                  <Download className="h-4 w-4" />
-                  Download Free PDF
-                </Button>
+                <Link href="/" className="w-full block">
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white gap-2" size="sm">
+                    <Upload className="h-4 w-4" />
+                    Upload & Share E-Book
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -201,6 +155,7 @@ export default function EbooksPage() {
           <p className="text-sm text-muted-foreground mb-4">Upload your publications and share knowledge with the Zenvoora community</p>
           <Link href="/">
             <Button className="gap-2 bg-red-600 hover:bg-red-700 text-white">
+              <Upload className="h-4 w-4" />
               Upload an E-Book
               <ArrowRight className="h-4 w-4" />
             </Button>

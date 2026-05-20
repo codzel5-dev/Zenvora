@@ -138,7 +138,7 @@ export default function TermsPage() {
             authorization, please send a DMCA takedown notice to:
           </p>
           <ul className="list-none pl-6 space-y-1 mt-3">
-            <li><strong className="text-foreground">Email:</strong> dmca@zenvoora.com</li>
+            <li><strong className="text-foreground">Contact Form:</strong> <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.vercel.app/contact</a></li>
             <li><strong className="text-foreground">Subject Line:</strong> DMCA Takedown Request</li>
           </ul>
           <p className="mt-3">Your DMCA notice must include:</p>
@@ -244,8 +244,7 @@ export default function TermsPage() {
             If you have questions about these Terms, please contact us:
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
-            <li>Email: legal@zenvoora.com</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.com/contact</a></li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.vercel.app/contact</a></li>
           </ul>
         </section>
       </div>

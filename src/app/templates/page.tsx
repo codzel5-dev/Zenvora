@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { LayoutTemplate, Download, ArrowRight, Star, FileText, Table2, Presentation, FileSpreadsheet } from 'lucide-react';
+import { LayoutTemplate, Upload, ArrowRight, FileText, Table2, Presentation, FileSpreadsheet } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,6 @@ const templates = [
     type: 'Document',
     icon: FileText,
     format: 'DOCX / PDF',
-    downloads: '12.4K',
   },
   {
     title: 'Business Invoice Template',
@@ -35,7 +34,6 @@ const templates = [
     type: 'Spreadsheet',
     icon: Table2,
     format: 'XLSX / PDF',
-    downloads: '8.7K',
   },
   {
     title: 'Business Plan Presentation',
@@ -45,7 +43,6 @@ const templates = [
     type: 'Presentation',
     icon: Presentation,
     format: 'PPTX / PDF',
-    downloads: '15.2K',
   },
   {
     title: 'Project Proposal Template',
@@ -55,7 +52,6 @@ const templates = [
     type: 'Document',
     icon: FileText,
     format: 'DOCX / PDF',
-    downloads: '6.3K',
   },
   {
     title: 'Marketing Report Template',
@@ -65,7 +61,6 @@ const templates = [
     type: 'Document',
     icon: FileSpreadsheet,
     format: 'XLSX / PDF',
-    downloads: '9.1K',
   },
   {
     title: 'Meeting Notes Template',
@@ -75,17 +70,7 @@ const templates = [
     type: 'Document',
     icon: FileText,
     format: 'DOCX / PDF',
-    downloads: '5.8K',
   },
-];
-
-const categories = [
-  { name: 'All Templates', active: true },
-  { name: 'Documents', active: false },
-  { name: 'Spreadsheets', active: false },
-  { name: 'Presentations', active: false },
-  { name: 'Resumes', active: false },
-  { name: 'Finance', active: false },
 ];
 
 export default function TemplatesPage() {
@@ -119,26 +104,8 @@ export default function TemplatesPage() {
         <AdBanner />
       </div>
 
-      {/* Category Filter */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              className={`px-4 py-2 text-sm rounded-full border transition-colors ${
-                cat.active
-                  ? 'bg-emerald-600 text-white border-emerald-600'
-                  : 'bg-background border-border hover:border-emerald-300 dark:hover:border-emerald-700 text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* Templates Grid */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {templates.map((template) => (
             <Card key={template.title} className="group overflow-hidden hover:shadow-xl hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300">
@@ -157,11 +124,6 @@ export default function TemplatesPage() {
                   <Badge className="bg-white/90 text-foreground border-0 text-xs font-medium">
                     {template.format}
                   </Badge>
-                </div>
-                {/* Downloads Badge */}
-                <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                  <Download className="h-3 w-3" />
-                  {template.downloads}
                 </div>
               </div>
 
@@ -183,10 +145,12 @@ export default function TemplatesPage() {
                     </Badge>
                   ))}
                 </div>
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2" size="sm">
-                  <Download className="h-4 w-4" />
-                  Download Free
-                </Button>
+                <Link href="/" className="w-full block">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2" size="sm">
+                    <Upload className="h-4 w-4" />
+                    Upload & Share Template
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -198,6 +162,7 @@ export default function TemplatesPage() {
           <p className="text-sm text-muted-foreground mb-4">Upload your own templates to share with the Zenvoora community</p>
           <Link href="/">
             <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Upload className="h-4 w-4" />
               Upload a Template
               <ArrowRight className="h-4 w-4" />
             </Button>

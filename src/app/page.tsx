@@ -31,11 +31,37 @@ export const metadata: Metadata = {
   title: 'Free File Upload & Sharing Service',
   description:
     'Upload and share files instantly with Zenvoora. Free, fast, and secure file hosting. No registration required. Share images, videos, documents, and more up to 100MB.',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting with no registration required.',
   },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Zenvoora',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app',
+  description: 'Free file upload and sharing service. Upload files up to 100MB and share them instantly with a unique link.',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  featureList: [
+    'File upload up to 100MB',
+    'Instant shareable links',
+    'No registration required',
+    'AI-powered file analysis',
+    'File format conversion',
+    'Malware scanning',
+  ],
 };
 
 const workflowSteps = [
@@ -112,15 +138,21 @@ const features = [
 ];
 
 const stats = [
-  { label: 'Files Uploaded', value: '10M+' },
-  { label: 'Happy Users', value: '500K+' },
-  { label: 'Countries', value: '190+' },
-  { label: 'Uptime', value: '99.9%' },
+  { label: 'Max File Size', value: '100MB' },
+  { label: 'Cost', value: 'Free' },
+  { label: 'Global CDN', value: 'Fast' },
+  { label: 'Registration', value: 'None' },
 ];
 
 export default function HomePage() {
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-transparent to-emerald-50/50 dark:from-emerald-950/30 dark:via-transparent dark:to-emerald-950/20" />

@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           <p>
             Zenvoora (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your
-            information when you use our file upload and sharing service at zenvoora.com
+            information when you use our file upload and sharing service at zenvoora.vercel.app
             (the &quot;Service&quot;). By using the Service, you agree to the collection and use of
             information in accordance with this policy.
           </p>
@@ -250,7 +250,7 @@ export default function PrivacyPage() {
             <li>The right to lodge a complaint with a supervisory authority</li>
           </ul>
           <p className="mt-3">
-            To exercise any of these rights, please contact us at privacy@zenvoora.com.
+            To exercise any of these rights, please use our contact form at zenvoora.vercel.app/contact.
             We will respond to all legitimate requests within 30 days.
           </p>
         </section>
@@ -262,7 +262,7 @@ export default function PrivacyPage() {
             personal information from children under 13. If we become aware that we have collected
             personal data from a child under 13, we will take steps to delete that information
             promptly. Parents or guardians who believe their child has provided personal information
-            to us should contact us immediately at privacy@zenvoora.com.
+            to us should contact us immediately through our contact form at zenvoora.vercel.app/contact.
           </p>
         </section>
 
@@ -274,7 +274,7 @@ export default function PrivacyPage() {
             the purposes for which we use it, and the categories of third parties with whom we share it.
             You also have the right to request deletion of your personal information and the right to
             opt out of the sale of personal information. We do not sell personal information. To exercise
-            these rights, please contact us at privacy@zenvoora.com.
+            these rights, please contact us through our contact form at zenvoora.vercel.app/contact.
           </p>
         </section>
 
@@ -296,8 +296,7 @@ export default function PrivacyPage() {
             any of your data rights, please contact us:
           </p>
           <ul className="list-disc pl-6 space-y-1 mt-3">
-            <li>Email: privacy@zenvoora.com</li>
-            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.com/contact</a></li>
+            <li>Contact Form: <a href="/contact" className="text-emerald-600 dark:text-emerald-400 hover:underline">zenvoora.vercel.app/contact</a></li>
           </ul>
         </section>
       </div>

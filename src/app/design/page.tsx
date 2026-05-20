@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Palette, Download, ArrowRight, Layers, Sparkles } from 'lucide-react';
+import { Palette, Upload, ArrowRight, Layers, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,6 @@ const assets = [
     tags: ['Icons', 'UI', 'SVG', 'Mobile'],
     format: 'SVG + PNG',
     items: '200+',
-    downloads: '45.2K',
     color: 'emerald',
   },
   {
@@ -34,7 +33,6 @@ const assets = [
     tags: ['Gradients', 'Backgrounds', 'CSS', '4K'],
     format: 'PNG + CSS',
     items: '50',
-    downloads: '32.8K',
     color: 'purple',
   },
   {
@@ -44,7 +42,6 @@ const assets = [
     tags: ['Social Media', 'Instagram', 'Figma', 'Templates'],
     format: 'FIG + PNG',
     items: '30',
-    downloads: '28.5K',
     color: 'pink',
   },
   {
@@ -54,7 +51,6 @@ const assets = [
     tags: ['Patterns', 'Geometric', 'Vector', 'Abstract'],
     format: 'SVG + PNG',
     items: '40',
-    downloads: '19.3K',
     color: 'blue',
   },
   {
@@ -64,7 +60,6 @@ const assets = [
     tags: ['Illustrations', 'Flat Design', 'People', 'Vector'],
     format: 'SVG + PNG',
     items: '25',
-    downloads: '37.1K',
     color: 'orange',
   },
   {
@@ -74,18 +69,8 @@ const assets = [
     tags: ['Textures', 'Natural', 'Overlay', 'Hi-Res'],
     format: 'PNG (4K)',
     items: '30',
-    downloads: '22.6K',
     color: 'amber',
   },
-];
-
-const categories = [
-  { name: 'All Assets', active: true },
-  { name: 'Icons', active: false },
-  { name: 'Gradients', active: false },
-  { name: 'Illustrations', active: false },
-  { name: 'Textures', active: false },
-  { name: 'Templates', active: false },
 ];
 
 function getColorClasses(color: string) {
@@ -131,26 +116,8 @@ export default function DesignPage() {
         <AdBanner />
       </div>
 
-      {/* Category Filter */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              className={`px-4 py-2 text-sm rounded-full border transition-colors ${
-                cat.active
-                  ? 'bg-purple-600 text-white border-purple-600'
-                  : 'bg-background border-border hover:border-purple-300 dark:hover:border-purple-700 text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* Design Assets Grid */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {assets.map((asset) => {
             const colors = getColorClasses(asset.color);
@@ -172,16 +139,10 @@ export default function DesignPage() {
                       {asset.format}
                     </Badge>
                   </div>
-                  {/* Items + Downloads */}
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                    <div className="flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                      <Layers className="h-3 w-3" />
-                      {asset.items} items
-                    </div>
-                    <div className="flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-                      <Download className="h-3 w-3" />
-                      {asset.downloads}
-                    </div>
+                  {/* Items */}
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
+                    <Layers className="h-3 w-3" />
+                    {asset.items} items
                   </div>
                 </div>
 
@@ -199,10 +160,12 @@ export default function DesignPage() {
                       </Badge>
                     ))}
                   </div>
-                  <Button className={`w-full ${colors.button} text-white gap-2`} size="sm">
-                    <Download className="h-4 w-4" />
-                    Download Free
-                  </Button>
+                  <Link href="/" className="w-full block">
+                    <Button className={`w-full ${colors.button} text-white gap-2`} size="sm">
+                      <Upload className="h-4 w-4" />
+                      Upload & Share Assets
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );

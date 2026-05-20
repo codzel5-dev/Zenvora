@@ -18,6 +18,8 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app';
+
 export const metadata: Metadata = {
   title: {
     default: 'Zenvoora — Free File Upload & Sharing Service',
@@ -37,6 +39,12 @@ export const metadata: Metadata = {
     'Zenvoora',
   ],
   authors: [{ name: 'Zenvoora' }],
+  creator: 'Zenvoora',
+  publisher: 'Zenvoora',
+  metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: '/favicon.ico',
   },
@@ -44,9 +52,10 @@ export const metadata: Metadata = {
     title: 'Zenvoora — Free File Upload & Sharing Service',
     description:
       'Upload and share files instantly. Free, fast, and secure file hosting with no registration required.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://zenvoora.vercel.app',
+    url: siteUrl,
     siteName: 'Zenvoora',
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
@@ -57,6 +66,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   verification: {
     google: 'dt1xckxX1HsglwrL2XK6lWxf89yE9i6ruM8csqnCp38',
