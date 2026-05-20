@@ -18,7 +18,7 @@ export default function TermsPage() {
         Terms & Conditions
       </h1>
       <p className="text-sm text-muted-foreground mb-10">
-        Last updated: January 15, 2025
+        Last updated: May 20, 2026
       </p>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8 text-muted-foreground">
@@ -88,7 +88,23 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">5. User Content</h2>
+          <h2 className="text-xl font-semibold text-foreground">5. Advertising</h2>
+          <p>
+            Zenvoora displays advertisements provided by Google AdSense and potentially other
+            advertising networks. By using our Service, you acknowledge and agree to the following:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 mt-3">
+            <li>Advertisements may be displayed on any page of the Service alongside our content and features.</li>
+            <li>Google AdSense uses cookies and similar technologies to serve ads based on your prior visits to this and other websites. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" className="text-emerald-600 dark:text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>.</li>
+            <li>Third-party advertising companies may also use cookies, web beacons, and similar technologies to collect information about your visits to our site and other websites in order to provide advertisements about goods and services of interest to you.</li>
+            <li>You can learn more about how Google uses data at <a href="https://policies.google.com/technologies/ads" className="text-emerald-600 dark:text-emerald-400 hover:underline" target="_blank" rel="noopener noreferrer">How Google Uses Information from Sites Where You Use Our Services</a>.</li>
+            <li>Zenvoora does not control and is not responsible for the content, accuracy, or opinions expressed in any advertisement displayed on the Service.</li>
+            <li>Clicking on advertisements will take you to external websites that are not operated by Zenvoora. We are not responsible for the content or practices of these external sites.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-foreground">6. User Content</h2>
           <p>
             You retain all rights to the content you upload to Zenvoora. By uploading a file, you grant
             Zenvoora a limited, non-exclusive license to store, serve, and distribute the file via the
@@ -102,7 +118,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">6. File Retention and Deletion</h2>
+          <h2 className="text-xl font-semibold text-foreground">7. File Retention and Deletion</h2>
           <ul className="list-disc pl-6 space-y-2 mt-3">
             <li><strong className="text-foreground">Retention Period:</strong> Files are stored as long as they are being actively accessed. Files that have not been downloaded for 90 consecutive days may be automatically deleted to manage storage capacity.</li>
             <li><strong className="text-foreground">No Guarantee of Persistence:</strong> Zenvoora does not guarantee that any uploaded file will be stored indefinitely. We recommend keeping important files backed up elsewhere.</li>
@@ -111,7 +127,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">7. DMCA and Copyright Notices</h2>
+          <h2 className="text-xl font-semibold text-foreground">8. DMCA and Copyright Notices</h2>
           <p>
             Zenvoora respects the intellectual property rights of others and expects its users to do
             the same. We will respond to notices of alleged copyright infringement that comply with
@@ -141,7 +157,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">8. Rate Limiting</h2>
+          <h2 className="text-xl font-semibold text-foreground">9. Rate Limiting</h2>
           <p>
             To ensure fair usage and service stability, Zenvoora enforces rate limits:
           </p>
@@ -156,7 +172,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">9. Disclaimer of Warranties</h2>
+          <h2 className="text-xl font-semibold text-foreground">10. Disclaimer of Warranties</h2>
           <p>
             ZENVOORA IS PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY
             KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF
@@ -174,7 +190,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">10. Limitation of Liability</h2>
+          <h2 className="text-xl font-semibold text-foreground">11. Limitation of Liability</h2>
           <p>
             TO THE MAXIMUM EXTENT PERMITTED BY LAW, ZENVOORA AND ITS OPERATORS SHALL NOT BE LIABLE
             FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF
@@ -191,7 +207,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">11. Indemnification</h2>
+          <h2 className="text-xl font-semibold text-foreground">12. Indemnification</h2>
           <p>
             You agree to indemnify and hold harmless Zenvoora and its operators from any claims,
             damages, losses, liabilities, and expenses (including reasonable attorneys&apos; fees) arising
@@ -201,7 +217,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">12. Modifications to Terms</h2>
+          <h2 className="text-xl font-semibold text-foreground">13. Modifications to Terms</h2>
           <p>
             We reserve the right to modify these Terms at any time. Changes will be effective
             immediately upon posting to the Service. Your continued use of the Service after any
@@ -213,7 +229,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">13. Governing Law</h2>
+          <h2 className="text-xl font-semibold text-foreground">14. Governing Law</h2>
           <p>
             These Terms shall be governed by and construed in accordance with applicable laws,
             without regard to conflict of law provisions. Any disputes arising under these Terms
@@ -223,7 +239,7 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-foreground">14. Contact Information</h2>
+          <h2 className="text-xl font-semibold text-foreground">15. Contact Information</h2>
           <p>
             If you have questions about these Terms, please contact us:
           </p>
