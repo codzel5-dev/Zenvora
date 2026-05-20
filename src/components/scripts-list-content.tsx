@@ -152,7 +152,7 @@ const scripts = [
     tags: ['Python', 'Price Tracking', 'E-Commerce', 'Alerts'],
     lines: 98,
     category: 'Web Scraping',
-    code: `import requests\nfrom bs4 import BeautifulSoup\nimport json\nfrom datetime import datetime\n\ndef track_price(url, selector, target_price):\n    resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})\n    soup = BeautifulSoup(resp.text, 'html.parser')\n    price_elem = soup.select_one(selector)\n    if not price_elem:\n        return None\n    price_text = price_elem.get_text(strip=True).replace('$', '').replace(',', '')\n    current_price = float(price_text)\n    record = {'url': url, 'price': current_price, 'date': datetime.now().isoformat()}\n    if current_price <= target_price:\n        print(f"ALERT: Price dropped to ${current_price}!")\n    return record`,
+    code: `import requests\nfrom bs4 import BeautifulSoup\nimport json\nfrom datetime import datetime\n\ndef track_price(url, selector, target_price):\n    resp = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})\n    soup = BeautifulSoup(resp.text, 'html.parser')\n    price_elem = soup.select_one(selector)\n    if not price_elem:\n        return None\n    price_text = price_elem.get_text(strip=True).replace('$', '').replace(',', '')\n    current_price = float(price_text)\n    record = {'url': url, 'price': current_price, 'date': datetime.now().isoformat()}\n    if current_price <= target_price:\n        print(f"ALERT: Price dropped to " + str(current_price) + "!")\n    return record`,
   },
   {
     title: 'LinkedIn Profile Scraper',
@@ -217,7 +217,7 @@ const scripts = [
     tags: ['Bash', 'Logs', 'Rotation', 'Cleanup'],
     lines: 55,
     category: 'DevOps',
-    code: `#!/bin/bash\n# Log Rotation & Cleanup\nLOG_DIR="/var/log/app"\nMAX_AGE_DAYS=30\nMAX_SIZE_MB=500\n\ncd "$LOG_DIR" || exit 1\n\n# Compress logs older than 1 day\nfind . -name "*.log" -mtime +1 ! -name "*.gz" -exec gzip {} \\;\n\n# Remove compressed logs older than MAX_AGE_DAYS\nfind . -name "*.log.gz" -mtime +$MAX_AGE_DAYS -delete\n\n# Check total log directory size\nTOTAL_SIZE=$(du -sm "$LOG_DIR" | cut -f1)\nif [ "$TOTAL_SIZE" -gt "$MAX_SIZE_MB" ]; then\n    echo "WARNING: Log directory exceeds ${MAX_SIZE_MB}MB (current: ${TOTAL_SIZE}MB)"\n    # Remove oldest files first\n    find . -name "*.gz" -printf '%T+ %p\\n' | sort | head -5 | awk '{print $2}' | xargs rm -f\nfi`,
+    code: "#!/bin/bash\n# Log Rotation & Cleanup\nLOG_DIR=\"/var/log/app\"\nMAX_AGE_DAYS=30\nMAX_SIZE_MB=500\n\ncd \"$LOG_DIR\" || exit 1\n\n# Compress logs older than 1 day\nfind . -name \"*.log\" -mtime +1 ! -name \"*.gz\" -exec gzip {} \\;\n\n# Remove compressed logs older than MAX_AGE_DAYS\nfind . -name \"*.log.gz\" -mtime +\$MAX_AGE_DAYS -delete\n\n# Check total log directory size\nTOTAL_SIZE=$(du -sm \"$LOG_DIR\" | cut -f1)\nif [ \"$TOTAL_SIZE\" -gt \"$MAX_SIZE_MB\" ]; then\n    echo \"WARNING: Log directory exceeds \${MAX_SIZE_MB}MB (current: \${TOTAL_SIZE}MB)\"\n    # Remove oldest files first\n    find . -name \"*.gz\" -printf '%T+ %p\\\n' | sort | head -5 | awk '{print \$2}' | xargs rm -f\nfi",
   },
 
   // ── Data Processing (16-20) ─────────────────────────────────────────────────
@@ -369,7 +369,7 @@ const scripts = [
     tags: ['TypeScript', 'API', 'Logging', 'Analytics'],
     lines: 78,
     category: 'API',
-    code: `import { Request, Response, NextFunction } from 'express';\n\ninterface RequestLog {\n  method: string;\n  path: string;\n  status: number;\n  duration: number;\n  timestamp: Date;\n  ip: string;\n  userAgent: string;\n}\n\nconst logs: RequestLog[] = [];\n\nexport function requestLogger(req: Request, res: Response, next: NextFunction) {\n  const start = Date.now();\n  res.on('finish', () => {\n    logs.push({\n      method: req.method,\n      path: req.path,\n      status: res.statusCode,\n      duration: Date.now() - start,\n      timestamp: new Date(),\n      ip: req.ip,\n      userAgent: req.get('user-agent') || '',\n    });\n  });\n  next();\n}\n\nexport function getAnalytics() {\n  return logs.reduce((acc, log) => {\n    const key = \`\${log.method} \${log.path}\`;\n    acc[key] = (acc[key] || { count: 0, avgDuration: 0, errors: 0 });\n    acc[key].count++;\n    acc[key].avgDuration = (acc[key].avgDuration * (acc[key].count - 1) + log.duration) / acc[key].count;\n    if (log.status >= 400) acc[key].errors++;\n    return acc;\n  }, {} as Record<string, any>);\n}`,
+    code: "import { Request, Response, NextFunction } from 'express';\n\ninterface RequestLog {\n  method: string;\n  path: string;\n  status: number;\n  duration: number;\n  timestamp: Date;\n  ip: string;\n  userAgent: string;\n}\n\nconst logs: RequestLog[] = [];\n\nexport function requestLogger(req: Request, res: Response, next: NextFunction) {\n  const start = Date.now();\n  res.on('finish', () => {\n    logs.push({\n      method: req.method,\n      path: req.path,\n      status: res.statusCode,\n      duration: Date.now() - start,\n      timestamp: new Date(),\n      ip: req.ip,\n      userAgent: req.get('user-agent') || '',\n    });\n  });\n  next();\n}\n\nexport function getAnalytics() {\n  return logs.reduce((acc, log) => {\n    const key = log.method + ' ' + log.path;\n    acc[key] = (acc[key] || { count: 0, avgDuration: 0, errors: 0 });\n    acc[key].count++;\n    acc[key].avgDuration = (acc[key].avgDuration * (acc[key].count - 1) + log.duration) / acc[key].count;\n    if (log.status >= 400) acc[key].errors++;\n    return acc;\n  }, {} as Record<string, any>);\n}",
   },
   {
     title: 'GraphQL Schema Generator from REST API',
@@ -418,7 +418,7 @@ const scripts = [
     tags: ['Bash', 'Git', 'Analytics', 'DevOps'],
     lines: 95,
     category: 'Productivity',
-    code: `#!/bin/bash\n# Git Repository Stats Generator\n\nREPO_DIR=\${1:-.}\ncd "$REPO_DIR" || exit 1\n\necho "# Git Repository Statistics"\necho "- Total commits: $(git rev-list --count HEAD)"\necho "- Contributors: $(git shortlog -sn | wc -l)"\necho "- Active branches: $(git branch | wc -l)"\necho ""\n\necho "## Top Contributors"\ngit shortlog -sn | head -10\n\necho ""\necho "## Commits by Month"\ngit log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c | sort -rn`,
+    code: "#!/bin/bash\n# Git Repository Stats Generator\n\nREPO_DIR=\${1:-.}\ncd \"$REPO_DIR\" || exit 1\n\necho \"# Git Repository Statistics\"\necho \"- Total commits: $(git rev-list --count HEAD)\"\necho \"- Contributors: $(git shortlog -sn | wc -l)\"\necho \"- Active branches: $(git branch | wc -l)\"\necho \"\"\n\necho \"## Top Contributors\"\ngit shortlog -sn | head -10\n\necho \"\"\necho \"## Commits by Month\"\ngit log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c | sort -rn",
   },
   {
     title: 'Environment Variable Validator',
@@ -438,7 +438,7 @@ const scripts = [
     tags: ['Node.js', 'Email', 'HTML', 'Templates'],
     lines: 75,
     category: 'Email',
-    code: `function generateEmail(template, data) {\n  const baseStyles = `\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 0; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background: #4F46E5; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }\n    .content { background: white; padding: 30px; border: 1px solid #e5e7eb; }\n    .button { display: inline-block; background: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; }\n  `;\n  return \`<!DOCTYPE html><html><head><style>\${baseStyles}</style></head><body>\n    <div class="container">\${template(data)}</div></body></html>\`;\n}`,
+    code: "function generateEmail(template, data) {\n  const baseStyles = [\n    'body { font-family: sans-serif; margin: 0; padding: 0; }',\n    '.container { max-width: 600px; margin: 0 auto; padding: 20px; }',\n    '.header { background: #4F46E5; color: white; padding: 30px; text-align: center; }',\n    '.content { background: white; padding: 30px; border: 1px solid #e5e7eb; }',\n    '.button { display: inline-block; background: #4F46E5; color: white; padding: 12px 24px; border-radius: 6px; }',\n  ].join('\\n');\n  return '<!DOCTYPE html><html><head><style>' + baseStyles + '</style></head><body>' +\n    '<div class=\"container\">' + template(data) + '</div></body></html>';\n}",
   },
   {
     title: 'Slack Notification Bot — Multi-Channel Alerts',
@@ -458,7 +458,7 @@ const scripts = [
     tags: ['Node.js', 'Puppeteer', 'Screenshot', 'Testing'],
     lines: 72,
     category: 'Images',
-    code: `const puppeteer = require('puppeteer');\n\nconst viewports = [\n  { name: 'desktop', width: 1920, height: 1080 },\n  { name: 'tablet', width: 768, height: 1024 },\n  { name: 'mobile', width: 375, height: 812 },\n];\n\nasync function screenshot(url, outputDir) {\n  const browser = await puppeteer.launch();\n  const page = await browser.newPage();\n  for (const vp of viewports) {\n    await page.setViewport(vp);\n    await page.goto(url, { waitUntil: 'networkidle2' });\n    await page.screenshot({ path: \`\${outputDir}/\${vp.name}.png\`, fullPage: true });\n  }\n  await browser.close();\n}`,
+    code: "const puppeteer = require('puppeteer');\n\nconst viewports = [\n  { name: 'desktop', width: 1920, height: 1080 },\n  { name: 'tablet', width: 768, height: 1024 },\n  { name: 'mobile', width: 375, height: 812 },\n];\n\nasync function screenshot(url, outputDir) {\n  const browser = await puppeteer.launch();\n  const page = await browser.newPage();\n  for (const vp of viewports) {\n    await page.setViewport(vp);\n    await page.goto(url, { waitUntil: 'networkidle2' });\n    const filePath = outputDir + '/' + vp.name + '.png';\n    await page.screenshot({ path: filePath, fullPage: true });\n  }\n  await browser.close();\n}",
   },
   {
     title: 'Video to GIF Converter',

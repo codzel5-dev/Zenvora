@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import {
   Palette, ArrowRight, Upload, Search, Layers, Sparkles,
-  Icon, Box, Image, Type, Layout, Frame, Grid3x3,
+  Shapes, Box, Image, Type, Layout, Frame, Grid3x3,
   Monitor, Smartphone, PenTool, FileImage, LayoutGrid,
   Film, Globe, Zap, ChevronRight
 } from 'lucide-react';
@@ -17,7 +17,7 @@ import { AdBanner } from '@/components/ads/ad-banner';
 // ─── Category Definitions ────────────────────────────────────────────────────
 const categories = [
   { id: 'all', label: 'All Assets', icon: LayoutGrid },
-  { id: 'Icons', label: 'Icon Packs', icon: Icon },
+  { id: 'Icons', label: 'Icon Packs', icon: Shapes },
   { id: 'Illustrations', label: 'Illustrations', icon: PenTool },
   { id: 'Gradients', label: 'Gradients & Backgrounds', icon: Frame },
   { id: 'Textures', label: 'Textures & Patterns', icon: Grid3x3 },
@@ -51,7 +51,7 @@ function getCategoryColor(cat: string) {
 
 function getCategoryIcon(cat: string) {
   const map: Record<string, React.ComponentType<{ className?: string }>> = {
-    Icons: Icon,
+    Icons: Shapes,
     Illustrations: PenTool,
     Gradients: Frame,
     Textures: Grid3x3,
